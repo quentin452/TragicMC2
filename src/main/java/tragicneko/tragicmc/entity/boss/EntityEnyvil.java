@@ -68,11 +68,11 @@ public class EntityEnyvil extends TragicBoss implements IMultiPart {
 		this.setSize(5.5F, 5.5F);
 		this.setHealth(this.getMaxHealth());
 		this.tasks.addTask(0, new EntityAISwimming(this));
-		this.tasks.addTask(1, new EntityAIAttackOnCollide(this, EntityLivingBase.class, 1.0D, true));
+		//this.tasks.addTask(1, new EntityAIAttackOnCollide(this, EntityLivingBase.class, 1.0D, true)); // MAKE ALOT OF TPS LAGS
 		this.tasks.addTask(7, new EntityAILookIdle(this));
 		this.tasks.addTask(6, new EntityAIWander(this, 0.75D));
 		this.tasks.addTask(8, new EntityAIWatchTarget(this, 32.0F));
-		this.tasks.addTask(3, new EntityAIMoveTowardsTarget(this, 1.0D, 32.0F));
+		//this.tasks.addTask(3, new EntityAIMoveTowardsTarget(this, 1.0D, 32.0F));  // MAKE ALOT OF TPS LAGS
 		this.targetTasks.addTask(2, new EntityAIHurtByTarget(this, true));
 		this.targetTasks.addTask(3, new EntityAINearestAttackableTarget(this, EntityPlayer.class, 0, true));
 		this.targetTasks.addTask(4, new EntityAINearestAttackableTarget(this, EntityGolem.class, 0, true));
@@ -308,10 +308,10 @@ public class EntityEnyvil extends TragicBoss implements IMultiPart {
 				crystal.attackEntityFrom(DamageSource.causeMobDamage(this), 10000.0F);
 			}
 		}
-		
+
 		if (src.getEntity() instanceof EntityPlayerMP && TragicConfig.allowAchievements) ((EntityPlayerMP) src.getEntity()).triggerAchievement(TragicAchievements.enyvil);
 	}
-	
+
 	@Override
 	protected void dropFewItems(boolean flag, int l)
 	{
@@ -393,7 +393,7 @@ public class EntityEnyvil extends TragicBoss implements IMultiPart {
 		}
 
 		this.decrementValues();
-		
+
 		if (TragicConfig.enyvilDarkCrystals) this.updateCrystal();
 		this.updateTargetInfo();
 
@@ -410,7 +410,7 @@ public class EntityEnyvil extends TragicBoss implements IMultiPart {
 			double d5 = this.getAttackTarget().posX - this.posX;
 			double d7 = this.getAttackTarget().posZ - this.posZ;
 			this.renderYawOffset = this.rotationYaw = -((float)Math.atan2(d5, d7)) * 180.0F / (float)Math.PI;
-			
+
 			if (this.canUseNewAbility() && this.isEntityInRange(this.getAttackTarget(), 6.0F, 20.0F) && rand.nextInt(48) == 0 && TragicConfig.enyvilDarkLightning) this.setLightningTicks(100);
 			if (this.getLightningTicks() > 0 && this.getLightningTicks() % 20 == 0 && TragicConfig.enyvilDarkLightning) this.useDarkLightning();
 
