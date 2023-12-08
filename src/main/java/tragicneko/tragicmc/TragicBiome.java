@@ -43,10 +43,10 @@ public class TragicBiome extends BiomeGenBase {
 	public static BiomeGenBase FrozenTundra,FrozenHills,FrozenDepths;
 	public static BiomeGenBase Crystal;
 	public static BiomeGenBase DarkForest, DarkForestHills, DarkMarsh;
-
+	
 	//Synapse biomes
 	public static BiomeGenBase Synapse, SynapseDead, SynapseCorrupt;
-
+	
 	//Wilds biomes
 	public static BiomeGenBase WildPlains, IriseiPlains, SeraleisSerenade;
 	public static BiomeGenBase WildForest, WildDenseForest, ImbertonForest, KlahksTrove, UpsidusVeld;
@@ -57,7 +57,7 @@ public class TragicBiome extends BiomeGenBase {
 	public static BiomeGenBase WildRiver, RiverOfSouls, FyxisRiver;
 	public static BiomeGenBase WildLake, WildOcean, SeaOfSorrow, VexinLake, StelSea, ExivSea;
 	public static BiomeGenBase WildMountains, LarinthianMountains, EttenDrove, IrsalasVolcano;
-
+	
 	//Nerve Center biome
 	public static BiomeGenBase NerveCenter;
 
@@ -80,7 +80,7 @@ public class TragicBiome extends BiomeGenBase {
 		if (TragicConfig.allowTimeController) this.spawnableMonsterList.add(new BiomeGenBase.SpawnListEntry(EntityTimeController.class, TragicConfig.timeControllerSC, 0, 0));
 		if (TragicConfig.allowErkel) this.spawnableCreatureList.add(new BiomeGenBase.SpawnListEntry(EntityErkel.class, TragicConfig.erkelSC, TragicConfig.erkelGS[0], TragicConfig.erkelGS[1]));
 		if (TragicConfig.allowKindlingSpirit) this.spawnableCreatureList.add(new BiomeGenBase.SpawnListEntry(EntityWisp.class, TragicConfig.kindlingSpiritSC, TragicConfig.kindlingSpiritGS[0], TragicConfig.kindlingSpiritGS[1]));
-		if (TragicConfig.allowAvris) this.spawnableMonsterList.add(new BiomeGenBase.SpawnListEntry(EntityAvris.class, TragicConfig.avrisSC, TragicConfig.avrisGS[0], TragicConfig.avrisGS[1]));
+		if (TragicConfig.allowAvris) this.spawnableMonsterList.add(new BiomeGenBase.SpawnListEntry(EntityAvris.class, TragicConfig.avrisSC, TragicConfig.avrisGS[0], TragicConfig.avrisGS[1])); 
 	}
 
 	@Override
@@ -120,7 +120,7 @@ public class TragicBiome extends BiomeGenBase {
 		byte b0 = (byte)(this.field_150604_aj & 255);
 		Block block1 = this.fillerBlock;
 		int k = -1;
-		int l = (int)(z / 3.0D + 3.0D + rand.nextInt() * 0.25D);
+		int l = (int)(z / 3.0D + 3.0D + rand.nextDouble() * 0.25D);
 		int i1 = x & 15;
 		int j1 = y & 15;
 		int k1 = blockArray.length / 256;
@@ -129,7 +129,7 @@ public class TragicBiome extends BiomeGenBase {
 		{
 			int i2 = (j1 * 16 + i1) * k1 + l1;
 
-			if (l1 <= rand.nextInt(5))
+			if (l1 <= 0 + rand.nextInt(5))
 			{
 				blockArray[i2] = Blocks.air;
 			}

@@ -225,11 +225,11 @@ public class TragicBlocks {
 	public static Block DarkwoodPlanks;
 	public static Block DarkVine;
 	public static Block DarkTallGrass;
-
+	
 	public static Block SkyFruit;
 	public static Block Deathglow;
 	public static Block Honeydrop;
-
+	
 	public static Block Corsin;
 
 	public static void load()
@@ -381,7 +381,7 @@ public class TragicBlocks {
 
 		TragicFlower = (new BlockTragicFlower(0));
 		GameRegistry.registerBlock(TragicFlower, ItemBlockTragicFlower.class, "tragicFlower");
-
+		
 		TragicFlower2 = (new BlockTragicFlower(1));
 		GameRegistry.registerBlock(TragicFlower2, ItemBlockTragicFlower2.class, "tragicFlower2");
 
@@ -648,16 +648,16 @@ public class TragicBlocks {
 			}
 		}.setBlockName("tragicmc.septicGas");
 		GameRegistry.registerBlock(SepticGas, ItemBlock.class, "septicGas");
-
+		
 		SkyFruit = new BlockFruit().setBlockName("tragicmc.skyFruit").setBlockTextureName("tragicmc:SkyFruit");
 		GameRegistry.registerBlock(SkyFruit, ItemBlock.class, "skyFruitBlock");
-
+		
 		Deathglow = new BlockCrop().setBlockName("tragicmc.deathglow").setBlockTextureName("tragicmc:Deathglow");
 		GameRegistry.registerBlock(Deathglow, ItemBlock.class, "deathglow");
-
+		
 		Honeydrop = new BlockCrop().setBlockName("tragicmc.honeydrop").setBlockTextureName("tragicmc:Honeydrop");
 		GameRegistry.registerBlock(Honeydrop, ItemBlock.class, "honeydrop");
-
+		
 		Corsin = new BlockCorsin().setBlockName("tragicmc.corsin");
 		GameRegistry.registerBlock(Corsin, TragicItemBlock.class, "corsin", new Object[] {new String[] {"normal", "faded", "brick", "fadedBrick", "circle", "celled", "scarred", "crystal", "crystalWrap"}, "corsin"});
 
@@ -698,7 +698,7 @@ public class TragicBlocks {
 		OreDictionary.registerOre("plankWood", DarkwoodPlanks);
 
 		java.util.Set<BiomeGenBase> set = FlowerWorldGen.allowedBiomes;
-		BiomeGenBase[] biomes = set.toArray(new BiomeGenBase[0]);
+		BiomeGenBase[] biomes = set.toArray(new BiomeGenBase[set.size()]);
 		boolean[] discrim = new boolean[16];
 
 		for (int j = 0; j < 16; j++) discrim[j] = true;
