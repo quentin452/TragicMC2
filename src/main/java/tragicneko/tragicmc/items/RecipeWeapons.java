@@ -4,7 +4,6 @@ import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
-import scala.tools.nsc.doc.model.Object;
 
 public class RecipeWeapons extends ShapelessOreRecipe {
 

@@ -10,9 +10,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
-import scala.Float;
-import scala.tools.nsc.doc.model.Class;
-import scala.tools.nsc.doc.model.Object;
 import tragicneko.tragicmc.TragicMC;
 import tragicneko.tragicmc.entity.boss.EntityPart;
 

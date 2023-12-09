@@ -70,11 +70,11 @@ public class EntityEnyvil extends TragicBoss implements IMultiPart {
         this.setSize(5.5F, 5.5F);
         this.setHealth(this.getMaxHealth());
         this.tasks.addTask(0, new EntityAISwimming(this));
-        this.tasks.addTask(1, new EntityAIAttackOnCollide(this, EntityLivingBase.class, 1.0D, true));
+        //this.tasks.addTask(1, new EntityAIAttackOnCollide(this, EntityLivingBase.class, 1.0D, true));// MAKE ALOT OF TPS LAGS
         this.tasks.addTask(7, new EntityAILookIdle(this));
         this.tasks.addTask(6, new EntityAIWander(this, 0.75D));
         this.tasks.addTask(8, new EntityAIWatchTarget(this, 32.0F));
-        this.tasks.addTask(3, new EntityAIMoveTowardsTarget(this, 1.0D, 32.0F));
+        //this.tasks.addTask(3, new EntityAIMoveTowardsTarget(this, 1.0D, 32.0F));// MAKE ALOT OF TPS LAGS
         this.targetTasks.addTask(2, new EntityAIHurtByTarget(this, true));
         this.targetTasks.addTask(3, new EntityAINearestAttackableTarget(this, EntityPlayer.class, 0, true));
         this.targetTasks.addTask(4, new EntityAINearestAttackableTarget(this, EntityGolem.class, 0, true));

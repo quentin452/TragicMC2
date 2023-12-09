@@ -3,8 +3,6 @@ package tragicneko.tragicmc.util;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
-import scala.tools.nsc.doc.model.Class;
-import scala.tools.nsc.doc.model.Object;
 import tragicneko.tragicmc.TragicMC;
 
 import java.util.*;

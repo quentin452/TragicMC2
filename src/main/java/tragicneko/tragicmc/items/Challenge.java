@@ -13,7 +13,6 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.biome.BiomeGenBase;
-import scala.tools.nsc.doc.model.Class;
 import tragicneko.tragicmc.TragicBiome;
 import tragicneko.tragicmc.TragicBlocks;
 import tragicneko.tragicmc.TragicItems;

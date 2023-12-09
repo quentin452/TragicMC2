@@ -7,7 +7,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
-import scala.tools.nsc.doc.model.Object;
 import tragicneko.tragicmc.TragicMC;
 import tragicneko.tragicmc.items.amulet.ItemAmulet;
 import tragicneko.tragicmc.util.AmuletHelper;

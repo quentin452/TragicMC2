@@ -13,8 +13,6 @@ import net.minecraft.util.WeightedRandom;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.biome.BiomeGenBase.SpawnListEntry;
-import scala.tools.nsc.doc.model.Class;
-import scala.tools.nsc.doc.model.Object;
 import tragicneko.tragicmc.TragicMC;
 
 import java.util.List;

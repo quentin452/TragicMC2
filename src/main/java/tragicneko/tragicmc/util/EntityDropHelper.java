@@ -7,7 +7,6 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.WeightedRandom;
-import scala.tools.nsc.doc.model.Class;
 import tragicneko.tragicmc.TragicBlocks;
 import tragicneko.tragicmc.TragicItems;
 import tragicneko.tragicmc.TragicMC;

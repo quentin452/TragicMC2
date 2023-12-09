@@ -13,7 +13,6 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.WeightedRandom;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import scala.tools.nsc.doc.model.Class;
 import tragicneko.tragicmc.TragicEnchantments;
 import tragicneko.tragicmc.TragicItems;
 import tragicneko.tragicmc.TragicMC;

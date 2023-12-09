@@ -887,7 +887,7 @@ public class TragicBlocks {
         OreDictionary.registerOre("plankWood", DarkwoodPlanks);
 
         java.util.Set<BiomeGenBase> set = FlowerWorldGen.allowedBiomes;
-        BiomeGenBase[] biomes = set.toArray(new BiomeGenBase[set.size()]);
+        BiomeGenBase[] biomes = set.toArray(new BiomeGenBase[0]);
         boolean[] discrim = new boolean[16];
 
         for (int j = 0; j < 16; j++) discrim[j] = true;
