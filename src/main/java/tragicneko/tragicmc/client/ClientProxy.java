@@ -11,6 +11,10 @@ import net.minecraftforge.common.MinecraftForge;
 
 import org.lwjgl.input.Keyboard;
 
+import cpw.mods.fml.client.registry.ClientRegistry;
+import cpw.mods.fml.client.registry.RenderingRegistry;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import tragicneko.tragicmc.TragicConfig;
 import tragicneko.tragicmc.TragicItems;
 import tragicneko.tragicmc.TragicMC;
@@ -170,176 +174,214 @@ import tragicneko.tragicmc.entity.projectile.EntityTimeBomb;
 import tragicneko.tragicmc.entity.projectile.EntityWebBomb;
 import tragicneko.tragicmc.events.ClientEvents;
 import tragicneko.tragicmc.events.MouseEvents;
-import cpw.mods.fml.client.registry.ClientRegistry;
-import cpw.mods.fml.client.registry.RenderingRegistry;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
 public class ClientProxy extends CommonProxy {
 
-	//public static final String moddir = "tragicmc:";
+    // public static final String moddir = "tragicmc:";
 
-	public static KeyBinding useSpecial = new KeyBinding("Special Use", Keyboard.KEY_R, TragicMC.MODNAME);
-	public static KeyBinding openAmuletGui = new KeyBinding("Open Amulet Gui", Keyboard.KEY_Y, TragicMC.MODNAME);
+    public static KeyBinding useSpecial = new KeyBinding("Special Use", Keyboard.KEY_R, TragicMC.MODNAME);
+    public static KeyBinding openAmuletGui = new KeyBinding("Open Amulet Gui", Keyboard.KEY_Y, TragicMC.MODNAME);
 
-	public static final ModelOverlordArmor[] modelsOverlord = new ModelOverlordArmor[] {new ModelOverlordArmor(0), new ModelOverlordArmor(1),
-		new ModelOverlordArmor(2), new ModelOverlordArmor(3)};
+    public static final ModelOverlordArmor[] modelsOverlord = new ModelOverlordArmor[] { new ModelOverlordArmor(0),
+        new ModelOverlordArmor(1), new ModelOverlordArmor(2), new ModelOverlordArmor(3) };
 
-	public static final ModelLightArmor[] modelsLight = new ModelLightArmor[] {new ModelLightArmor(0), new ModelLightArmor(1),
-		new ModelLightArmor(2), new ModelLightArmor(3)};
+    public static final ModelLightArmor[] modelsLight = new ModelLightArmor[] { new ModelLightArmor(0),
+        new ModelLightArmor(1), new ModelLightArmor(2), new ModelLightArmor(3) };
 
-	public static final ModelDarkArmor[] modelsDark = new  ModelDarkArmor[] {new ModelDarkArmor(0), new ModelDarkArmor(1),
-		new ModelDarkArmor(2), new ModelDarkArmor(3)};
+    public static final ModelDarkArmor[] modelsDark = new ModelDarkArmor[] { new ModelDarkArmor(0),
+        new ModelDarkArmor(1), new ModelDarkArmor(2), new ModelDarkArmor(3) };
 
-	public static final IRenderHandler collisionSkyRenderer = new TragicSkyRenderer();
-	public static final IRenderHandler synapseSkyRenderer = new SynapseSkyRenderer();
+    public static final IRenderHandler collisionSkyRenderer = new TragicSkyRenderer();
+    public static final IRenderHandler synapseSkyRenderer = new SynapseSkyRenderer();
 
-	public static IIcon particleTextureSheet;
-	public static TragicMusicTicker musicTicker;
-	
-	@Override
-	public void registerRenders()
-	{
-		Minecraft mc = Minecraft.getMinecraft();
+    public static IIcon particleTextureSheet;
+    public static TragicMusicTicker musicTicker;
 
-		//Gui event registration
-		if (TragicConfig.showDoomGui) MinecraftForge.EVENT_BUS.register(new GuiDoom(mc));
-		if (TragicConfig.showAmuletStatusGui) MinecraftForge.EVENT_BUS.register(new GuiAmuletStatus(mc));
+    @Override
+    public void registerRenders() {
+        Minecraft mc = Minecraft.getMinecraft();
 
-		//Keybinding registrations
-		ClientRegistry.registerKeyBinding(useSpecial);
-		ClientRegistry.registerKeyBinding(openAmuletGui);
+        // Gui event registration
+        if (TragicConfig.showDoomGui) MinecraftForge.EVENT_BUS.register(new GuiDoom(mc));
+        if (TragicConfig.showAmuletStatusGui) MinecraftForge.EVENT_BUS.register(new GuiAmuletStatus(mc));
 
-		//Client-side event registration
-		FMLCommonHandler.instance().bus().register(new ClientEvents());
-		MinecraftForge.EVENT_BUS.register(new ClientEvents());
-		MinecraftForge.EVENT_BUS.register(new MouseEvents(mc));
-		
-		//Music
-		musicTicker = new TragicMusicTicker(mc);
-		MinecraftForge.EVENT_BUS.register(new TragicMusicTicker(mc));
+        // Keybinding registrations
+        ClientRegistry.registerKeyBinding(useSpecial);
+        ClientRegistry.registerKeyBinding(openAmuletGui);
 
-		//Particle registration
-		TextureMap map = Minecraft.getMinecraft().getTextureMapBlocks();
-		particleTextureSheet = map.registerIcon("tragicmc:ParticleTextures");
+        // Client-side event registration
+        FMLCommonHandler.instance()
+            .bus()
+            .register(new ClientEvents());
+        MinecraftForge.EVENT_BUS.register(new ClientEvents());
+        MinecraftForge.EVENT_BUS.register(new MouseEvents(mc));
 
-		//Tile Entity render registration (shouldn't be used too often)
-		ClientRegistry.bindTileEntitySpecialRenderer(TileEntitySoulChest.class, new RenderSoulChest());
+        // Music
+        musicTicker = new TragicMusicTicker(mc);
+        MinecraftForge.EVENT_BUS.register(new TragicMusicTicker(mc));
 
-		//Weapon models
-		if (TragicConfig.allowWeaponModels)
-		{
-			MinecraftForgeClient.registerItemRenderer(TragicItems.ReaperScythe, new RenderEpicWeapon(0, mc));
-			MinecraftForgeClient.registerItemRenderer(TragicItems.Butcher, new RenderEpicWeapon(1, mc));
-			MinecraftForgeClient.registerItemRenderer(TragicItems.DragonFang, new RenderEpicWeapon(2, mc));
-			MinecraftForgeClient.registerItemRenderer(TragicItems.Thardus, new RenderEpicWeapon(3, mc));
-			MinecraftForgeClient.registerItemRenderer(TragicItems.Splinter, new RenderEpicWeapon(4, mc));
-			MinecraftForgeClient.registerItemRenderer(TragicItems.Paranoia, new RenderEpicWeapon(5, mc));
-			MinecraftForgeClient.registerItemRenderer(TragicItems.CelestialAegis, new RenderEpicWeapon(6, mc));
-			MinecraftForgeClient.registerItemRenderer(TragicItems.Titan, new RenderEpicWeapon(7, mc));
-			MinecraftForgeClient.registerItemRenderer(TragicItems.SilentHellraiser, new RenderEpicWeapon(8, mc));
-			MinecraftForgeClient.registerItemRenderer(TragicItems.Sentinel, new RenderEpicWeapon(9, mc));
-			MinecraftForgeClient.registerItemRenderer(TragicItems.NekoLauncher, new RenderEpicWeapon(10, mc));
-			MinecraftForgeClient.registerItemRenderer(TragicItems.IreNetParticleCannon, new RenderEpicWeapon(11, mc));
-		}
+        // Particle registration
+        TextureMap map = Minecraft.getMinecraft()
+            .getTextureMapBlocks();
+        particleTextureSheet = map.registerIcon("tragicmc:ParticleTextures");
 
-		//Projectile renders
-		RenderingRegistry.registerEntityRenderingHandler(EntityThrowingRock.class, new RenderProjectile(0));
-		RenderingRegistry.registerEntityRenderingHandler(EntityPumpkinbomb.class, new RenderProjectile(2));
-		RenderingRegistry.registerEntityRenderingHandler(EntityLargePumpkinbomb.class, new RenderProjectile(3));
-		RenderingRegistry.registerEntityRenderingHandler(EntityPoisonBarb.class, new RenderProjectile(4));
-		RenderingRegistry.registerEntityRenderingHandler(EntityNekoRocket.class, new RenderProjectile(5));
-		RenderingRegistry.registerEntityRenderingHandler(EntityNekoStickyBomb.class, new RenderProjectile(6));
-		RenderingRegistry.registerEntityRenderingHandler(EntityNekoClusterBomb.class, new RenderProjectile(7));
-		RenderingRegistry.registerEntityRenderingHandler(EntityNekoMiniBomb.class, new RenderProjectile(8));
-		RenderingRegistry.registerEntityRenderingHandler(EntitySolarBomb.class, new RenderProjectile(9));
-		RenderingRegistry.registerEntityRenderingHandler(EntitySpiritCast.class, new RenderProjectile(10));
-		RenderingRegistry.registerEntityRenderingHandler(EntitySpore.class, new RenderProjectile(11));
-		RenderingRegistry.registerEntityRenderingHandler(EntityBanana.class, new RenderProjectile(12));
-		RenderingRegistry.registerEntityRenderingHandler(EntityLargeRock.class, new RenderLargeRock());
-		RenderingRegistry.registerEntityRenderingHandler(EntityIcicle.class, new RenderProjectile(14));
-		RenderingRegistry.registerEntityRenderingHandler(EntityTimeBomb.class, new RenderProjectile(15));
-		RenderingRegistry.registerEntityRenderingHandler(EntityStarShard.class, new RenderProjectile(16));
-		RenderingRegistry.registerEntityRenderingHandler(EntityDarkLightning.class, new RenderProjectile(17));
-		RenderingRegistry.registerEntityRenderingHandler(EntityPitchBlack.class, new RenderProjectile(18));
-		RenderingRegistry.registerEntityRenderingHandler(EntityDarkEnergy.class, new RenderProjectile(19));
-		RenderingRegistry.registerEntityRenderingHandler(EntityDarkMortor.class, new RenderProjectile(20));
-		RenderingRegistry.registerEntityRenderingHandler(EntityWebBomb.class, new RenderProjectile(21));
-		RenderingRegistry.registerEntityRenderingHandler(EntityCrystalMortor.class, new RenderProjectile(22));
-		RenderingRegistry.registerEntityRenderingHandler(EntityOverlordMortor.class, new RenderProjectile(23));
-		RenderingRegistry.registerEntityRenderingHandler(EntityIreEnergy.class, new RenderProjectile(24));
+        // Tile Entity render registration (shouldn't be used too often)
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntitySoulChest.class, new RenderSoulChest());
 
-		//Non projectile renders
-		RenderingRegistry.registerEntityRenderingHandler(EntityStatue.class, new RenderStatue());
-		RenderingRegistry.registerEntityRenderingHandler(EntityTimeDisruption.class, new RenderTimeDisruption());
-		RenderingRegistry.registerEntityRenderingHandler(EntityDarkCrystal.class, new RenderDarkCrystal());
-		RenderingRegistry.registerEntityRenderingHandler(EntityGuardianShield.class, new RenderGuardianShield());
-		RenderingRegistry.registerEntityRenderingHandler(EntityDimensionalAnomaly.class, new RenderDimensionalAnomaly());
-		RenderingRegistry.registerEntityRenderingHandler(EntityLock.class, new RenderLock());
-		RenderingRegistry.registerEntityRenderingHandler(EntityDirectedLightning.class, new RenderDirectedLightning());
-		RenderingRegistry.registerEntityRenderingHandler(EntityNuke.class, new RenderNuke());
+        // Weapon models
+        if (TragicConfig.allowWeaponModels) {
+            MinecraftForgeClient.registerItemRenderer(TragicItems.ReaperScythe, new RenderEpicWeapon(0, mc));
+            MinecraftForgeClient.registerItemRenderer(TragicItems.Butcher, new RenderEpicWeapon(1, mc));
+            MinecraftForgeClient.registerItemRenderer(TragicItems.DragonFang, new RenderEpicWeapon(2, mc));
+            MinecraftForgeClient.registerItemRenderer(TragicItems.Thardus, new RenderEpicWeapon(3, mc));
+            MinecraftForgeClient.registerItemRenderer(TragicItems.Splinter, new RenderEpicWeapon(4, mc));
+            MinecraftForgeClient.registerItemRenderer(TragicItems.Paranoia, new RenderEpicWeapon(5, mc));
+            MinecraftForgeClient.registerItemRenderer(TragicItems.CelestialAegis, new RenderEpicWeapon(6, mc));
+            MinecraftForgeClient.registerItemRenderer(TragicItems.Titan, new RenderEpicWeapon(7, mc));
+            MinecraftForgeClient.registerItemRenderer(TragicItems.SilentHellraiser, new RenderEpicWeapon(8, mc));
+            MinecraftForgeClient.registerItemRenderer(TragicItems.Sentinel, new RenderEpicWeapon(9, mc));
+            MinecraftForgeClient.registerItemRenderer(TragicItems.NekoLauncher, new RenderEpicWeapon(10, mc));
+            MinecraftForgeClient.registerItemRenderer(TragicItems.IreNetParticleCannon, new RenderEpicWeapon(11, mc));
+        }
 
-		//Mob renders
-		RenderingRegistry.registerEntityRenderingHandler(EntityJabba.class, new RenderJabba());
-		RenderingRegistry.registerEntityRenderingHandler(EntityJarra.class, new RenderMob(new ModelJarra(), 0.655F, "Jarra", 1.585F));
-		RenderingRegistry.registerEntityRenderingHandler(EntityPlague.class, new RenderMob(new ModelPlague(), 0.115F, "Plague"));
-		RenderingRegistry.registerEntityRenderingHandler(EntityGragul.class, new RenderMob(new ModelGragul(), 0.115F, "Gragul"));
-		RenderingRegistry.registerEntityRenderingHandler(EntityKragul.class, new RenderMob(new ModelKragul(), 0.115F, "Kragul", 2.115F));
-		RenderingRegistry.registerEntityRenderingHandler(EntityMinotaur.class, new RenderMob(new ModelMinotaur(), 0.337F, "Minotaur"));
-		RenderingRegistry.registerEntityRenderingHandler(EntityRagr.class, new RenderRagr());
-		RenderingRegistry.registerEntityRenderingHandler(EntityInkling.class, new RenderMob(new ModelInkling(), 0.175F, "Inkling"));
-		RenderingRegistry.registerEntityRenderingHandler(EntityPumpkinhead.class, new RenderPumpkinhead());
-		RenderingRegistry.registerEntityRenderingHandler(EntityTragicNeko.class, new RenderMob(new ModelTragicNeko(), 0.295F, "TragicNeko"));
-		RenderingRegistry.registerEntityRenderingHandler(EntityTox.class, new RenderTox());
-		RenderingRegistry.registerEntityRenderingHandler(EntityMagmox.class, new RenderMob(new ModelTox(), 0.565F, "Magmox2", 1.625F));
-		RenderingRegistry.registerEntityRenderingHandler(EntityCryse.class, new RenderCryse());
-		RenderingRegistry.registerEntityRenderingHandler(EntityMegaCryse.class, new RenderMegaCryse());
-		RenderingRegistry.registerEntityRenderingHandler(EntityNorVox.class, new RenderNorVox());
-		RenderingRegistry.registerEntityRenderingHandler(EntityVoxStellarum.class, new RenderVoxStellarum());
-		RenderingRegistry.registerEntityRenderingHandler(EntityPirah.class, new RenderPirah());
-		RenderingRegistry.registerEntityRenderingHandler(EntityStin.class, new RenderStin());
-		RenderingRegistry.registerEntityRenderingHandler(EntityGreaterStin.class, new RenderMob(new ModelGreaterStin(), 0.675F, "GreaterStin"));
-		RenderingRegistry.registerEntityRenderingHandler(EntityStinKing.class, new RenderMob(new ModelStinKing(), 0.675F, "StinKing", 1.625F));
-		RenderingRegistry.registerEntityRenderingHandler(EntityStinQueen.class, new RenderMob(new ModelStinQueen(), 0.675F, "StinQueen", 1.225F));
-		RenderingRegistry.registerEntityRenderingHandler(EntityWisp.class, new RenderWisp());
-		RenderingRegistry.registerEntityRenderingHandler(EntityAbomination.class, new RenderMob(new ModelAbomination(), 0.475F, "Abomination"));
-		RenderingRegistry.registerEntityRenderingHandler(EntityErkel.class, new RenderErkel());
-		RenderingRegistry.registerEntityRenderingHandler(EntitySirv.class, new RenderMob(new ModelSirv(), 0.245F, "Sirv"));
-		RenderingRegistry.registerEntityRenderingHandler(EntityPsygote.class, new RenderMob(new ModelPsygote(), 0.565F, "Psygote"));
-		RenderingRegistry.registerEntityRenderingHandler(EntityNanoSwarm.class, new RenderMob(new ModelNanoSwarm(), 0.215F, "NanoSwarm", 1.545F));
-		RenderingRegistry.registerEntityRenderingHandler(EntityAegar.class, new RenderAegar());
-		RenderingRegistry.registerEntityRenderingHandler(EntityHunter.class, new RenderMob(new ModelHunter(), 0.565F, "Hunter"));
-		RenderingRegistry.registerEntityRenderingHandler(EntityHarvester.class, new RenderMob(new ModelHarvester(), 0.785F, "Harvester", 1.555F));
-		RenderingRegistry.registerEntityRenderingHandler(EntityLockbot.class, new RenderMob(new ModelLockbot(), 0.335F, "Lockbot"));
-		RenderingRegistry.registerEntityRenderingHandler(EntitySeeker.class, new RenderMob(new ModelSeeker(), 0.475F, "Seeker"));
-		RenderingRegistry.registerEntityRenderingHandler(EntityIre.class, new RenderMobTransparent(new ModelIre(), 0.335F, "Ire", 1.0F, 0.65F));
-		RenderingRegistry.registerEntityRenderingHandler(EntityArchangel.class, new RenderMobTransparent(new ModelArchangel(), 0.355F, "Archangel", 1.0F, 0.625F));
-		RenderingRegistry.registerEntityRenderingHandler(EntityFusea.class, new RenderFusea(0));
-		RenderingRegistry.registerEntityRenderingHandler(EntityVolatileFusea.class, new RenderFusea(1));
-		RenderingRegistry.registerEntityRenderingHandler(EntityRanmas.class, new RenderMob(new ModelRanmas(), 0.775F, "Ranmas", 1.25F));
-		RenderingRegistry.registerEntityRenderingHandler(EntityParasmite.class, new RenderMob(new ModelHunter(), 0.565F, "Parasmite", 1.355F));
-		RenderingRegistry.registerEntityRenderingHandler(EntityKurayami.class, new RenderMob(new ModelKurayami(), 0.645F, "Kurayami", 0.825F));
-		RenderingRegistry.registerEntityRenderingHandler(EntityAvris.class, new RenderMob(new ModelAvris(), 0.645F, "Avris"));
+        // Projectile renders
+        RenderingRegistry.registerEntityRenderingHandler(EntityThrowingRock.class, new RenderProjectile(0));
+        RenderingRegistry.registerEntityRenderingHandler(EntityPumpkinbomb.class, new RenderProjectile(2));
+        RenderingRegistry.registerEntityRenderingHandler(EntityLargePumpkinbomb.class, new RenderProjectile(3));
+        RenderingRegistry.registerEntityRenderingHandler(EntityPoisonBarb.class, new RenderProjectile(4));
+        RenderingRegistry.registerEntityRenderingHandler(EntityNekoRocket.class, new RenderProjectile(5));
+        RenderingRegistry.registerEntityRenderingHandler(EntityNekoStickyBomb.class, new RenderProjectile(6));
+        RenderingRegistry.registerEntityRenderingHandler(EntityNekoClusterBomb.class, new RenderProjectile(7));
+        RenderingRegistry.registerEntityRenderingHandler(EntityNekoMiniBomb.class, new RenderProjectile(8));
+        RenderingRegistry.registerEntityRenderingHandler(EntitySolarBomb.class, new RenderProjectile(9));
+        RenderingRegistry.registerEntityRenderingHandler(EntitySpiritCast.class, new RenderProjectile(10));
+        RenderingRegistry.registerEntityRenderingHandler(EntitySpore.class, new RenderProjectile(11));
+        RenderingRegistry.registerEntityRenderingHandler(EntityBanana.class, new RenderProjectile(12));
+        RenderingRegistry.registerEntityRenderingHandler(EntityLargeRock.class, new RenderLargeRock());
+        RenderingRegistry.registerEntityRenderingHandler(EntityIcicle.class, new RenderProjectile(14));
+        RenderingRegistry.registerEntityRenderingHandler(EntityTimeBomb.class, new RenderProjectile(15));
+        RenderingRegistry.registerEntityRenderingHandler(EntityStarShard.class, new RenderProjectile(16));
+        RenderingRegistry.registerEntityRenderingHandler(EntityDarkLightning.class, new RenderProjectile(17));
+        RenderingRegistry.registerEntityRenderingHandler(EntityPitchBlack.class, new RenderProjectile(18));
+        RenderingRegistry.registerEntityRenderingHandler(EntityDarkEnergy.class, new RenderProjectile(19));
+        RenderingRegistry.registerEntityRenderingHandler(EntityDarkMortor.class, new RenderProjectile(20));
+        RenderingRegistry.registerEntityRenderingHandler(EntityWebBomb.class, new RenderProjectile(21));
+        RenderingRegistry.registerEntityRenderingHandler(EntityCrystalMortor.class, new RenderProjectile(22));
+        RenderingRegistry.registerEntityRenderingHandler(EntityOverlordMortor.class, new RenderProjectile(23));
+        RenderingRegistry.registerEntityRenderingHandler(EntityIreEnergy.class, new RenderProjectile(24));
 
-		//Boss renders
-		RenderingRegistry.registerEntityRenderingHandler(EntityApis.class, new RenderApis());
-		RenderingRegistry.registerEntityRenderingHandler(EntityDeathReaper.class, new RenderDeathReaper());
-		RenderingRegistry.registerEntityRenderingHandler(EntityKitsune.class, new RenderKitsune());
-		RenderingRegistry.registerEntityRenderingHandler(EntityPolaris.class, new RenderPolaris());
-		RenderingRegistry.registerEntityRenderingHandler(EntityYeti.class, new RenderYeti());
-		RenderingRegistry.registerEntityRenderingHandler(EntityTimeController.class, new RenderTimeController());
-		RenderingRegistry.registerEntityRenderingHandler(EntityEnyvil.class, new RenderEnyvil());
-		RenderingRegistry.registerEntityRenderingHandler(EntityClaymation.class, new RenderClaymation());
+        // Non projectile renders
+        RenderingRegistry.registerEntityRenderingHandler(EntityStatue.class, new RenderStatue());
+        RenderingRegistry.registerEntityRenderingHandler(EntityTimeDisruption.class, new RenderTimeDisruption());
+        RenderingRegistry.registerEntityRenderingHandler(EntityDarkCrystal.class, new RenderDarkCrystal());
+        RenderingRegistry.registerEntityRenderingHandler(EntityGuardianShield.class, new RenderGuardianShield());
+        RenderingRegistry
+            .registerEntityRenderingHandler(EntityDimensionalAnomaly.class, new RenderDimensionalAnomaly());
+        RenderingRegistry.registerEntityRenderingHandler(EntityLock.class, new RenderLock());
+        RenderingRegistry.registerEntityRenderingHandler(EntityDirectedLightning.class, new RenderDirectedLightning());
+        RenderingRegistry.registerEntityRenderingHandler(EntityNuke.class, new RenderNuke());
 
-		//Alpha renders
-		RenderingRegistry.registerEntityRenderingHandler(EntityOverlordCocoon.class, new RenderOverlordCocoon());
-		RenderingRegistry.registerEntityRenderingHandler(EntityOverlordCombat.class, new RenderOverlordCombat());
-		RenderingRegistry.registerEntityRenderingHandler(EntityOverlordCore.class, new RenderOverlordCore());
-	}
+        // Mob renders
+        RenderingRegistry.registerEntityRenderingHandler(EntityJabba.class, new RenderJabba());
+        RenderingRegistry.registerEntityRenderingHandler(
+            EntityJarra.class,
+            new RenderMob(new ModelJarra(), 0.655F, "Jarra", 1.585F));
+        RenderingRegistry
+            .registerEntityRenderingHandler(EntityPlague.class, new RenderMob(new ModelPlague(), 0.115F, "Plague"));
+        RenderingRegistry
+            .registerEntityRenderingHandler(EntityGragul.class, new RenderMob(new ModelGragul(), 0.115F, "Gragul"));
+        RenderingRegistry.registerEntityRenderingHandler(
+            EntityKragul.class,
+            new RenderMob(new ModelKragul(), 0.115F, "Kragul", 2.115F));
+        RenderingRegistry.registerEntityRenderingHandler(
+            EntityMinotaur.class,
+            new RenderMob(new ModelMinotaur(), 0.337F, "Minotaur"));
+        RenderingRegistry.registerEntityRenderingHandler(EntityRagr.class, new RenderRagr());
+        RenderingRegistry
+            .registerEntityRenderingHandler(EntityInkling.class, new RenderMob(new ModelInkling(), 0.175F, "Inkling"));
+        RenderingRegistry.registerEntityRenderingHandler(EntityPumpkinhead.class, new RenderPumpkinhead());
+        RenderingRegistry.registerEntityRenderingHandler(
+            EntityTragicNeko.class,
+            new RenderMob(new ModelTragicNeko(), 0.295F, "TragicNeko"));
+        RenderingRegistry.registerEntityRenderingHandler(EntityTox.class, new RenderTox());
+        RenderingRegistry.registerEntityRenderingHandler(
+            EntityMagmox.class,
+            new RenderMob(new ModelTox(), 0.565F, "Magmox2", 1.625F));
+        RenderingRegistry.registerEntityRenderingHandler(EntityCryse.class, new RenderCryse());
+        RenderingRegistry.registerEntityRenderingHandler(EntityMegaCryse.class, new RenderMegaCryse());
+        RenderingRegistry.registerEntityRenderingHandler(EntityNorVox.class, new RenderNorVox());
+        RenderingRegistry.registerEntityRenderingHandler(EntityVoxStellarum.class, new RenderVoxStellarum());
+        RenderingRegistry.registerEntityRenderingHandler(EntityPirah.class, new RenderPirah());
+        RenderingRegistry.registerEntityRenderingHandler(EntityStin.class, new RenderStin());
+        RenderingRegistry.registerEntityRenderingHandler(
+            EntityGreaterStin.class,
+            new RenderMob(new ModelGreaterStin(), 0.675F, "GreaterStin"));
+        RenderingRegistry.registerEntityRenderingHandler(
+            EntityStinKing.class,
+            new RenderMob(new ModelStinKing(), 0.675F, "StinKing", 1.625F));
+        RenderingRegistry.registerEntityRenderingHandler(
+            EntityStinQueen.class,
+            new RenderMob(new ModelStinQueen(), 0.675F, "StinQueen", 1.225F));
+        RenderingRegistry.registerEntityRenderingHandler(EntityWisp.class, new RenderWisp());
+        RenderingRegistry.registerEntityRenderingHandler(
+            EntityAbomination.class,
+            new RenderMob(new ModelAbomination(), 0.475F, "Abomination"));
+        RenderingRegistry.registerEntityRenderingHandler(EntityErkel.class, new RenderErkel());
+        RenderingRegistry
+            .registerEntityRenderingHandler(EntitySirv.class, new RenderMob(new ModelSirv(), 0.245F, "Sirv"));
+        RenderingRegistry
+            .registerEntityRenderingHandler(EntityPsygote.class, new RenderMob(new ModelPsygote(), 0.565F, "Psygote"));
+        RenderingRegistry.registerEntityRenderingHandler(
+            EntityNanoSwarm.class,
+            new RenderMob(new ModelNanoSwarm(), 0.215F, "NanoSwarm", 1.545F));
+        RenderingRegistry.registerEntityRenderingHandler(EntityAegar.class, new RenderAegar());
+        RenderingRegistry
+            .registerEntityRenderingHandler(EntityHunter.class, new RenderMob(new ModelHunter(), 0.565F, "Hunter"));
+        RenderingRegistry.registerEntityRenderingHandler(
+            EntityHarvester.class,
+            new RenderMob(new ModelHarvester(), 0.785F, "Harvester", 1.555F));
+        RenderingRegistry
+            .registerEntityRenderingHandler(EntityLockbot.class, new RenderMob(new ModelLockbot(), 0.335F, "Lockbot"));
+        RenderingRegistry
+            .registerEntityRenderingHandler(EntitySeeker.class, new RenderMob(new ModelSeeker(), 0.475F, "Seeker"));
+        RenderingRegistry.registerEntityRenderingHandler(
+            EntityIre.class,
+            new RenderMobTransparent(new ModelIre(), 0.335F, "Ire", 1.0F, 0.65F));
+        RenderingRegistry.registerEntityRenderingHandler(
+            EntityArchangel.class,
+            new RenderMobTransparent(new ModelArchangel(), 0.355F, "Archangel", 1.0F, 0.625F));
+        RenderingRegistry.registerEntityRenderingHandler(EntityFusea.class, new RenderFusea(0));
+        RenderingRegistry.registerEntityRenderingHandler(EntityVolatileFusea.class, new RenderFusea(1));
+        RenderingRegistry.registerEntityRenderingHandler(
+            EntityRanmas.class,
+            new RenderMob(new ModelRanmas(), 0.775F, "Ranmas", 1.25F));
+        RenderingRegistry.registerEntityRenderingHandler(
+            EntityParasmite.class,
+            new RenderMob(new ModelHunter(), 0.565F, "Parasmite", 1.355F));
+        RenderingRegistry.registerEntityRenderingHandler(
+            EntityKurayami.class,
+            new RenderMob(new ModelKurayami(), 0.645F, "Kurayami", 0.825F));
+        RenderingRegistry
+            .registerEntityRenderingHandler(EntityAvris.class, new RenderMob(new ModelAvris(), 0.645F, "Avris"));
 
-	@Override
-	public EntityPlayer getPlayerFromMessageCtx(MessageContext ctx)
-	{
-		return Minecraft.getMinecraft().thePlayer;
-	}
+        // Boss renders
+        RenderingRegistry.registerEntityRenderingHandler(EntityApis.class, new RenderApis());
+        RenderingRegistry.registerEntityRenderingHandler(EntityDeathReaper.class, new RenderDeathReaper());
+        RenderingRegistry.registerEntityRenderingHandler(EntityKitsune.class, new RenderKitsune());
+        RenderingRegistry.registerEntityRenderingHandler(EntityPolaris.class, new RenderPolaris());
+        RenderingRegistry.registerEntityRenderingHandler(EntityYeti.class, new RenderYeti());
+        RenderingRegistry.registerEntityRenderingHandler(EntityTimeController.class, new RenderTimeController());
+        RenderingRegistry.registerEntityRenderingHandler(EntityEnyvil.class, new RenderEnyvil());
+        RenderingRegistry.registerEntityRenderingHandler(EntityClaymation.class, new RenderClaymation());
+
+        // Alpha renders
+        RenderingRegistry.registerEntityRenderingHandler(EntityOverlordCocoon.class, new RenderOverlordCocoon());
+        RenderingRegistry.registerEntityRenderingHandler(EntityOverlordCombat.class, new RenderOverlordCombat());
+        RenderingRegistry.registerEntityRenderingHandler(EntityOverlordCore.class, new RenderOverlordCore());
+    }
+
+    @Override
+    public EntityPlayer getPlayerFromMessageCtx(MessageContext ctx) {
+        return Minecraft.getMinecraft().thePlayer;
+    }
 }

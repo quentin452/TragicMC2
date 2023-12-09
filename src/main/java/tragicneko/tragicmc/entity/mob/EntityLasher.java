@@ -4,13 +4,13 @@ import net.minecraft.world.World;
 
 public class EntityLasher extends TragicMob {
 
-	public EntityLasher(World par1World) {
-		super(par1World);
-	}
+    public EntityLasher(World par1World) {
+        super(par1World);
+    }
 
-	@Override
-	protected boolean isChangeAllowed() {
-		return false;
-	}
+    @Override
+    protected boolean isChangeAllowed() {
+        return false;
+    }
 
 }

@@ -6,13 +6,12 @@ import tragicneko.tragicmc.doomsday.Doomsday;
 
 public class ArmorMercury extends TragicArmor {
 
-	public ArmorMercury(ArmorMaterial material, int armorType, Doomsday dday) {
-		super(material, armorType, dday);
-	}
+    public ArmorMercury(ArmorMaterial material, int armorType, Doomsday dday) {
+        super(material, armorType, dday);
+    }
 
-	@Override
-	public String getArmorTexture(ItemStack stack, Entity entity, int slot, String type)
-	{
-		return slot == 2 ? "tragicmc:textures/armor/Mercury2.png" : "tragicmc:textures/armor/Mercury1.png";
-	}
+    @Override
+    public String getArmorTexture(ItemStack stack, Entity entity, int slot, String type) {
+        return slot == 2 ? "tragicmc:textures/armor/Mercury2.png" : "tragicmc:textures/armor/Mercury1.png";
+    }
 }

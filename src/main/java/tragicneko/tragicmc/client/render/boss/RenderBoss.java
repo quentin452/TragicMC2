@@ -12,33 +12,30 @@ import tragicneko.tragicmc.entity.boss.TragicBoss;
 
 public abstract class RenderBoss extends RenderLiving {
 
-	protected float scale;
+    protected float scale;
 
-	public RenderBoss(ModelBase model, float shadowSize, float scale) {
-		super(model, shadowSize);
-		this.scale = scale;
-	}
+    public RenderBoss(ModelBase model, float shadowSize, float scale) {
+        super(model, shadowSize);
+        this.scale = scale;
+    }
 
-	public RenderBoss(ModelBase model, float shadowSize) {
-		this(model, shadowSize, 1.0F);
-	}
+    public RenderBoss(ModelBase model, float shadowSize) {
+        this(model, shadowSize, 1.0F);
+    }
 
-	@Override
-	protected void preRenderCallback(EntityLivingBase entity, float par2)
-	{
-		GL11.glScalef(scale, scale, scale);
-	}
+    @Override
+    protected void preRenderCallback(EntityLivingBase entity, float par2) {
+        GL11.glScalef(scale, scale, scale);
+    }
 
-	public void doRender(TragicBoss boss, double par2, double par4, double par6, float par8, float par9)
-	{
-		BossStatus.setBossStatus(boss, true);
-		super.doRender(boss, par2, par4, par6, par8, par9);
-	}
+    public void doRender(TragicBoss boss, double par2, double par4, double par6, float par8, float par9) {
+        BossStatus.setBossStatus(boss, true);
+        super.doRender(boss, par2, par4, par6, par8, par9);
+    }
 
-	@Override
-	public void doRender(EntityLiving entity, double par2, double par4, double par6, float par8, float par9)
-	{
-		this.doRender((TragicBoss)entity, par2, par4, par6, par8, par9);
-	}
+    @Override
+    public void doRender(EntityLiving entity, double par2, double par4, double par6, float par8, float par9) {
+        this.doRender((TragicBoss) entity, par2, par4, par6, par8, par9);
+    }
 
 }

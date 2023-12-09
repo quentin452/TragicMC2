@@ -1,7 +1,5 @@
 package tragicneko.tragicmc.items.weapons;
 
-import java.util.List;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -22,162 +20,167 @@ import tragicneko.tragicmc.util.LoreHelper.EnchantEntry;
 import tragicneko.tragicmc.util.LoreHelper.Lore;
 import tragicneko.tragicmc.util.LoreHelper.LoreEntry;
 
+import java.util.List;
+
 public class TragicWeapon extends ItemSword {
 
-	protected final Doomsday doomsday;
-	protected Doomsday doomsday2;
-	public Item.ToolMaterial material;
-	public float ascensionLevel;
+    protected final Doomsday doomsday;
+    protected Doomsday doomsday2;
+    public Item.ToolMaterial material;
+    public float ascensionLevel;
 
-	public TragicWeapon(ToolMaterial material, Doomsday dday) {
-		super(material);
-		this.doomsday = dday;
-		this.setCreativeTab(TragicMC.Survival);
-		this.material = material;
-	}
+    public TragicWeapon(ToolMaterial material, Doomsday dday) {
+        super(material);
+        this.doomsday = dday;
+        this.setCreativeTab(TragicMC.Survival);
+        this.material = material;
+    }
 
-	public TragicWeapon(ToolMaterial material, Doomsday dday, Doomsday dday2)
-	{
-		this(material, dday);
-		this.doomsday2 = dday2;
-	}
-	
-	@Override
-	public EnumRarity getRarity(ItemStack stack)
-	{
-		int rarity = stack.hasTagCompound() && stack.stackTagCompound.hasKey("tragicLoreRarity") ? stack.stackTagCompound.getInteger("tragicLoreRarity") : 0;
-		return EnumRarity.values()[rarity];
-	}
+    public TragicWeapon(ToolMaterial material, Doomsday dday, Doomsday dday2) {
+        this(material, dday);
+        this.doomsday2 = dday2;
+    }
 
-	public Doomsday getDoomsday()
-	{
-		return this.doomsday;
-	}
+    @Override
+    public EnumRarity getRarity(ItemStack stack) {
+        int rarity = stack.hasTagCompound() && stack.stackTagCompound.hasKey("tragicLoreRarity")
+            ? stack.stackTagCompound.getInteger("tragicLoreRarity")
+            : 0;
+        return EnumRarity.values()[rarity];
+    }
 
-	public EnumDoomType doomsdayType()
-	{
-		return this.doomsday.doomsdayType;
-	}
-	
-	public TragicWeapon setAscensionLevel(float f)
-	{
-		this.ascensionLevel = f;
-		return this;
-	}
+    public Doomsday getDoomsday() {
+        return this.doomsday;
+    }
 
-	@Override
-	public void addInformation(ItemStack stack, EntityPlayer par2EntityPlayer, List par2List, boolean par4)
-	{
-		if (TragicConfig.allowRandomWeaponLore && LoreHelper.getRarityFromStack(stack) >= 0)
-		{
-			String lore = LoreHelper.getDescFromStack(stack);
+    public EnumDoomType doomsdayType() {
+        return this.doomsday.doomsdayType;
+    }
 
-			if (lore != null)
-			{
-				LoreHelper.splitDesc(par2List, lore, 32, LoreHelper.getFormatForRarity(LoreHelper.getRarityFromStack(stack)));
-				par2List.add(""); //extra space
-			}
-		}
+    public TragicWeapon setAscensionLevel(float f) {
+        this.ascensionLevel = f;
+        return this;
+    }
 
-		if (TragicConfig.allowDoomsdays && this.doomsday != null)
-		{
-			EnumChatFormatting format;
+    @Override
+    public void addInformation(ItemStack stack, EntityPlayer par2EntityPlayer, List par2List, boolean par4) {
+        if (TragicConfig.allowRandomWeaponLore && LoreHelper.getRarityFromStack(stack) >= 0) {
+            String lore = LoreHelper.getDescFromStack(stack);
 
-			if (this.doomsday2 != null)
-			{
-				format = doomsday2.getDoomsdayType().getFormat();
-				par2List.add(format + doomsday2.getLocalizedType() + ": " + doomsday2.getLocalizedName());
-				par2List.add(EnumChatFormatting.GOLD + "Doom Cost: " + doomsday2.getScaledDoomRequirement(par2EntityPlayer.worldObj));
-				par2List.add(EnumChatFormatting.DARK_AQUA + "Cooldown: " + doomsday2.getScaledCooldown(par2EntityPlayer.worldObj.difficultySetting));
-				par2List.add(""); //extra space in between
-			}
+            if (lore != null) {
+                LoreHelper
+                    .splitDesc(par2List, lore, 32, LoreHelper.getFormatForRarity(LoreHelper.getRarityFromStack(stack)));
+                par2List.add(""); // extra space
+            }
+        }
 
-			format = doomsday.getDoomsdayType().getFormat();
-			par2List.add(format + doomsday.getLocalizedType() + ": " + doomsday.getLocalizedName());
-			par2List.add(EnumChatFormatting.GOLD + "Doom Cost: " + doomsday.getScaledDoomRequirement(par2EntityPlayer.worldObj));
-			par2List.add(EnumChatFormatting.DARK_AQUA + "Cooldown: " + doomsday.getScaledCooldown(par2EntityPlayer.worldObj.difficultySetting));
-			par2List.add(""); //extra space
-		}
-		
-		if (this.ascensionLevel > 0F)
-		{
-			par2List.add(EnumChatFormatting.LIGHT_PURPLE + "Ascension Level: " + this.ascensionLevel);
-		}
-	}
+        if (TragicConfig.allowDoomsdays && this.doomsday != null) {
+            EnumChatFormatting format;
 
-	@Override
-	public void onUpdate(ItemStack stack, World world, Entity entity, int numb, boolean flag)
-	{
-		if (world.isRemote || !(entity instanceof EntityPlayer)) return;
-		updateAsWeapon(stack, world, entity, numb, flag);
-	}
+            if (this.doomsday2 != null) {
+                format = doomsday2.getDoomsdayType()
+                    .getFormat();
+                par2List.add(format + doomsday2.getLocalizedType() + ": " + doomsday2.getLocalizedName());
+                par2List.add(
+                    EnumChatFormatting.GOLD + "Doom Cost: "
+                        + doomsday2.getScaledDoomRequirement(par2EntityPlayer.worldObj));
+                par2List.add(
+                    EnumChatFormatting.DARK_AQUA + "Cooldown: "
+                        + doomsday2.getScaledCooldown(par2EntityPlayer.worldObj.difficultySetting));
+                par2List.add(""); // extra space in between
+            }
 
-	/**
-	 * Allow any item class to update as a weapon and not require extending the main TragicWeapon class, this applies and decrements cooldown and sets up a weapon's lore
-	 * @param stack
-	 * @param world
-	 * @param entity
-	 * @param numb
-	 * @param flag
-	 */
-	public static void updateAsWeapon(ItemStack stack, World world, Entity entity, int numb, boolean flag)
-	{
-		if (world.isRemote) return;
-		if (!stack.hasTagCompound()) stack.stackTagCompound = new NBTTagCompound();
+            format = doomsday.getDoomsdayType()
+                .getFormat();
+            par2List.add(format + doomsday.getLocalizedType() + ": " + doomsday.getLocalizedName());
+            par2List.add(
+                EnumChatFormatting.GOLD + "Doom Cost: " + doomsday.getScaledDoomRequirement(par2EntityPlayer.worldObj));
+            par2List.add(
+                EnumChatFormatting.DARK_AQUA + "Cooldown: "
+                    + doomsday.getScaledCooldown(par2EntityPlayer.worldObj.difficultySetting));
+            par2List.add(""); // extra space
+        }
 
-		if (!stack.stackTagCompound.hasKey("cooldown")) stack.stackTagCompound.setInteger("cooldown", 0);
-		if (getStackCooldown(stack) > 0) setStackCooldown(stack, getStackCooldown(stack) - 1);
+        if (this.ascensionLevel > 0F) {
+            par2List.add(EnumChatFormatting.LIGHT_PURPLE + "Ascension Level: " + this.ascensionLevel);
+        }
+    }
 
-		if (!TragicConfig.allowRandomWeaponLore || stack.getItem() == null) return;
+    @Override
+    public void onUpdate(ItemStack stack, World world, Entity entity, int numb, boolean flag) {
+        if (world.isRemote || !(entity instanceof EntityPlayer)) return;
+        updateAsWeapon(stack, world, entity, numb, flag);
+    }
 
-		LoreEntry entry = LoreHelper.getLoreEntry(stack.getItem().getClass());
-		if (entry == null) return;
-		Lore lore = entry.getRandomLore();
-		if (lore == null) return;
+    /**
+     * Allow any item class to update as a weapon and not require extending the main TragicWeapon class, this applies
+     * and decrements cooldown and sets up a weapon's lore
+     *
+     * @param stack
+     * @param world
+     * @param entity
+     * @param numb
+     * @param flag
+     */
+    public static void updateAsWeapon(ItemStack stack, World world, Entity entity, int numb, boolean flag) {
+        if (world.isRemote) return;
+        if (!stack.hasTagCompound()) stack.stackTagCompound = new NBTTagCompound();
 
-		if (!stack.stackTagCompound.hasKey("tragicLoreRarity")) stack.stackTagCompound.setByte("tragicLoreRarity", Byte.valueOf((byte) lore.getRarity()));
-		if (!stack.stackTagCompound.hasKey("tragicLoreDesc")) stack.stackTagCompound.setString("tragicLoreDesc", lore.getDesc());
+        if (!stack.stackTagCompound.hasKey("cooldown")) stack.stackTagCompound.setInteger("cooldown", 0);
+        if (getStackCooldown(stack) > 0) setStackCooldown(stack, getStackCooldown(stack) - 1);
 
-		int rarity = stack.stackTagCompound.getByte("tragicLoreRarity");
-		lore = entry.getLoreOfRarity(rarity);
+        if (!TragicConfig.allowRandomWeaponLore || stack.getItem() == null) return;
 
-		if (!stack.isItemEnchanted() && lore != null)
-		{
-			EnchantEntry[] enchants = entry.getEnchantmentsForRarity(rarity);
-			if (enchants == null) return;
+        LoreEntry entry = LoreHelper.getLoreEntry(
+            stack.getItem()
+                .getClass());
+        if (entry == null) return;
+        Lore lore = entry.getRandomLore();
+        if (lore == null) return;
 
-			for (EnchantEntry e : enchants)
-			{
-				if (e != null && e.getEnchantment() != null) stack.addEnchantment(e.getEnchantment(), e.getEnchantLevel());
-			}
-		}
-	}
+        if (!stack.stackTagCompound.hasKey("tragicLoreRarity"))
+            stack.stackTagCompound.setByte("tragicLoreRarity", Byte.valueOf((byte) lore.getRarity()));
+        if (!stack.stackTagCompound.hasKey("tragicLoreDesc"))
+            stack.stackTagCompound.setString("tragicLoreDesc", lore.getDesc());
 
-	public static boolean canUseAbility(PropertyDoom doom, int rq)
-	{
-		return doom != null && TragicConfig.allowNonDoomsdayAbilities && doom.getCurrentCooldown() == 0 && doom.getCurrentDoom() >= rq;
-	}
+        int rarity = stack.stackTagCompound.getByte("tragicLoreRarity");
+        lore = entry.getLoreOfRarity(rarity);
 
-	public static void setStackCooldown(ItemStack stack, int i)
-	{
-		if (!stack.hasTagCompound()) return;
-		stack.stackTagCompound.setInteger("cooldown", i);
-	}
+        if (!stack.isItemEnchanted() && lore != null) {
+            EnchantEntry[] enchants = entry.getEnchantmentsForRarity(rarity);
+            if (enchants == null) return;
 
-	public static int getStackCooldown(ItemStack stack)
-	{
-		return stack.hasTagCompound() && stack.stackTagCompound.hasKey("cooldown") ? stack.stackTagCompound.getInteger("cooldown") : 0;
-	}
+            for (EnchantEntry e : enchants) {
+                if (e != null && e.getEnchantment() != null)
+                    stack.addEnchantment(e.getEnchantment(), e.getEnchantLevel());
+            }
+        }
+    }
 
-	public Doomsday getSecondaryDoomsday()
-	{
-		return this.doomsday2;
-	}
+    public static boolean canUseAbility(PropertyDoom doom, int rq) {
+        return doom != null && TragicConfig.allowNonDoomsdayAbilities
+            && doom.getCurrentCooldown() == 0
+            && doom.getCurrentDoom() >= rq;
+    }
 
-	@Override
-	public boolean hitEntity(ItemStack stack, EntityLivingBase entity, EntityLivingBase entity2)
-	{
-		if (entity instanceof EntityPlayer && !TragicConfig.allowPvP) return false;
-		return super.hitEntity(stack, entity, entity2);
-	}
+    public static void setStackCooldown(ItemStack stack, int i) {
+        if (!stack.hasTagCompound()) return;
+        stack.stackTagCompound.setInteger("cooldown", i);
+    }
+
+    public static int getStackCooldown(ItemStack stack) {
+        return stack.hasTagCompound() && stack.stackTagCompound.hasKey("cooldown")
+            ? stack.stackTagCompound.getInteger("cooldown")
+            : 0;
+    }
+
+    public Doomsday getSecondaryDoomsday() {
+        return this.doomsday2;
+    }
+
+    @Override
+    public boolean hitEntity(ItemStack stack, EntityLivingBase entity, EntityLivingBase entity2) {
+        if (entity instanceof EntityPlayer && !TragicConfig.allowPvP) return false;
+        return super.hitEntity(stack, entity, entity2);
+    }
 }

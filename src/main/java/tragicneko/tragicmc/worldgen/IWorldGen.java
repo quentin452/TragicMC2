@@ -6,5 +6,5 @@ import net.minecraft.world.World;
 
 public interface IWorldGen {
 
-	public abstract void generate(Random random, int chunkX, int chunkZ, World world);
+    public abstract void generate(Random random, int chunkX, int chunkZ, World world);
 }

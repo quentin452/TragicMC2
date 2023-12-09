@@ -4,50 +4,45 @@ import java.util.Random;
 
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
+
 import tragicneko.tragicmc.TragicConfig;
 import tragicneko.tragicmc.worldgen.biome.BiomeGenDarkForest;
 import tragicneko.tragicmc.worldgen.schematic.SchematicDarkHut;
 
 public class StructureDarkHut extends Structure {
 
-	public StructureDarkHut(int id, String s) {
-		super(new SchematicDarkHut(), id, s);
-	}
-	
-	@Override
-	public boolean isSurfaceStructure()
-	{
-		return true;
-	}
+    public StructureDarkHut(int id, String s) {
+        super(new SchematicDarkHut(), id, s);
+    }
 
-	@Override
-	public boolean isValidDimension(int dim)
-	{
-		return dim == TragicConfig.collisionID;
-	}
+    @Override
+    public boolean isSurfaceStructure() {
+        return true;
+    }
 
-	@Override
-	public boolean areCoordsValidForGeneration(World world, int x, int y, int z, Random rand)
-	{
-		BiomeGenBase biome = world.getBiomeGenForCoords(x, z);
-		if (biome instanceof BiomeGenDarkForest)
-		{
-			return super.areCoordsValidForGeneration(world, x, y, z, rand) && this.getRarity(200);
-		}
+    @Override
+    public boolean isValidDimension(int dim) {
+        return dim == TragicConfig.collisionID;
+    }
 
-		return false;
-	}
+    @Override
+    public boolean areCoordsValidForGeneration(World world, int x, int y, int z, Random rand) {
+        BiomeGenBase biome = world.getBiomeGenForCoords(x, z);
+        if (biome instanceof BiomeGenDarkForest) {
+            return super.areCoordsValidForGeneration(world, x, y, z, rand) && this.getRarity(200);
+        }
 
-	@Override
-	public boolean generateStructureWithVariant(int variant, World world, Random rand, int x, int y, int z)
-	{
-		if (!super.generateStructureWithVariant(variant, world, rand, x, y, z)) return false;
-		return this.schematic.generateStructure(world, rand, x, y, z);
-	}
-	
-	@Override
-	public int getStructureColor()
-	{
-		return 0x8732AB;
-	}
+        return false;
+    }
+
+    @Override
+    public boolean generateStructureWithVariant(int variant, World world, Random rand, int x, int y, int z) {
+        if (!super.generateStructureWithVariant(variant, world, rand, x, y, z)) return false;
+        return this.schematic.generateStructure(world, rand, x, y, z);
+    }
+
+    @Override
+    public int getStructureColor() {
+        return 0x8732AB;
+    }
 }

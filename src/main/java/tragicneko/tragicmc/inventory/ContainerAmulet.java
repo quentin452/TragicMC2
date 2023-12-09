@@ -5,184 +5,155 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+
 import tragicneko.tragicmc.items.amulet.ItemAmulet;
 import tragicneko.tragicmc.properties.PropertyAmulets;
 
 public class ContainerAmulet extends Container {
 
-	private static final int amuletStart = 1, amuletEnd = amuletStart + 2,
-			invStart = amuletEnd + 1, invEnd = invStart + 25;
-	
-	private final InventoryAmulet invAmulet;
+    private static final int amuletStart = 1, amuletEnd = amuletStart + 2, invStart = amuletEnd + 1,
+        invEnd = invStart + 25;
 
-	public ContainerAmulet(EntityPlayer player, InventoryPlayer invPlayer, InventoryAmulet invAmulet) {
+    private final InventoryAmulet invAmulet;
 
-		PropertyAmulets amulets = PropertyAmulets.get(player);
-		int slotsOpen = amulets.getSlotsOpen();
-		this.invAmulet = invAmulet;
+    public ContainerAmulet(EntityPlayer player, InventoryPlayer invPlayer, InventoryAmulet invAmulet) {
 
-		addSlotToContainer(new SlotActiveAmulet(invAmulet, 0, 49, 15, player, false));
+        PropertyAmulets amulets = PropertyAmulets.get(player);
+        int slotsOpen = amulets.getSlotsOpen();
+        this.invAmulet = invAmulet;
 
-		boolean flag = true;
+        addSlotToContainer(new SlotActiveAmulet(invAmulet, 0, 49, 15, player, false));
 
-		if (slotsOpen > 2)
-		{
-			flag = false;
-		}
-		addSlotToContainer(new SlotActiveAmulet(invAmulet, 2, 113, 15, player, flag));
+        boolean flag = true;
 
-		if (slotsOpen > 1)
-		{
-			flag = false;
-		}
-		addSlotToContainer(new SlotActiveAmulet(invAmulet, 1, 81, -1, player, flag));
+        if (slotsOpen > 2) {
+            flag = false;
+        }
+        addSlotToContainer(new SlotActiveAmulet(invAmulet, 2, 113, 15, player, flag));
 
-		int s = 3;
-		int j = 45;
+        if (slotsOpen > 1) {
+            flag = false;
+        }
+        addSlotToContainer(new SlotActiveAmulet(invAmulet, 1, 81, -1, player, flag));
 
-		//First row of slots
-		for (int i = 0; i < 5; i++)
-		{
-			addSlotToContainer(new SlotInactiveAmulet(invAmulet, s++, j + (i * 16) + (i * 2), 43));
-		}
+        int s = 3;
+        int j = 45;
 
-		//Second row of slots
-		for (int i = 0; i < 5; i++)
-		{
-			addSlotToContainer(new SlotInactiveAmulet(invAmulet, s++, j + (i * 16) + (i * 2), 61));
-		}
+        // First row of slots
+        for (int i = 0; i < 5; i++) {
+            addSlotToContainer(new SlotInactiveAmulet(invAmulet, s++, j + (i * 16) + (i * 2), 43));
+        }
 
-		//Third row of slots
-		for (int i = 0; i < 5; i++)
-		{
-			addSlotToContainer(new SlotInactiveAmulet(invAmulet, s++, j + (i * 16) + (i * 2), 79));
-		}
+        // Second row of slots
+        for (int i = 0; i < 5; i++) {
+            addSlotToContainer(new SlotInactiveAmulet(invAmulet, s++, j + (i * 16) + (i * 2), 61));
+        }
 
-		//Fourth row of slots
-		for (int i = 0; i < 5; i++)
-		{
-			addSlotToContainer(new SlotInactiveAmulet(invAmulet, s++, j + (i * 16) + (i * 2), 97));
-		}
+        // Third row of slots
+        for (int i = 0; i < 5; i++) {
+            addSlotToContainer(new SlotInactiveAmulet(invAmulet, s++, j + (i * 16) + (i * 2), 79));
+        }
 
-		//Fifth row of slots
-		for (int i = 0; i < 5; i++)
-		{
-			addSlotToContainer(new SlotInactiveAmulet(invAmulet, s++, j + (i * 16) + (i * 2), 115));
-		}
+        // Fourth row of slots
+        for (int i = 0; i < 5; i++) {
+            addSlotToContainer(new SlotInactiveAmulet(invAmulet, s++, j + (i * 16) + (i * 2), 97));
+        }
 
-		//For player hotbar
-		for (int i = 0; i < 9; i++)
-		{
-			addSlotToContainer(new Slot(invPlayer, i, 17 + (i * 16), 135));
-		}
-	}
+        // Fifth row of slots
+        for (int i = 0; i < 5; i++) {
+            addSlotToContainer(new SlotInactiveAmulet(invAmulet, s++, j + (i * 16) + (i * 2), 115));
+        }
 
-	@Override
-	public boolean canInteractWith(EntityPlayer var1) {
-		return true;
-	}
+        // For player hotbar
+        for (int i = 0; i < 9; i++) {
+            addSlotToContainer(new Slot(invPlayer, i, 17 + (i * 16), 135));
+        }
+    }
 
-	@Override
-	protected boolean mergeItemStack(ItemStack par1ItemStack, int par2, int par3, boolean par4)
-	{
-		boolean flag1 = false;
-		int k = par2;
+    @Override
+    public boolean canInteractWith(EntityPlayer var1) {
+        return true;
+    }
 
-		Slot slot;
-		ItemStack itemstack1;
+    @Override
+    protected boolean mergeItemStack(ItemStack par1ItemStack, int par2, int par3, boolean par4) {
+        boolean flag1 = false;
+        int k = par2;
 
-		if (par1ItemStack.stackSize > 0)
-		{
-			if (par4)
-			{
-				k = par3 - 1;
-			}
-			else
-			{
-				k = par2;
-			}
+        Slot slot;
+        ItemStack itemstack1;
 
-			while (!par4 && k < par3 || par4 && k >= par2)
-			{
-				slot = (Slot)this.inventorySlots.get(k);
-				itemstack1 = slot.getStack();
+        if (par1ItemStack.stackSize > 0) {
+            if (par4) {
+                k = par3 - 1;
+            } else {
+                k = par2;
+            }
 
-				if (itemstack1 == null && !(slot instanceof SlotActiveAmulet) || itemstack1 == null && slot instanceof SlotActiveAmulet && !((SlotActiveAmulet) slot).isLocked())
-				{
-					slot.putStack(par1ItemStack.copy());
-					slot.onSlotChanged();
-					par1ItemStack.stackSize = 0;
-					flag1 = true;
-					break;
-				}
+            while (!par4 && k < par3 || par4 && k >= par2) {
+                slot = (Slot) this.inventorySlots.get(k);
+                itemstack1 = slot.getStack();
 
-				if (par4)
-				{
-					--k;
-				}
-				else
-				{
-					++k;
-				}
-			}
-		}
-		else
-		{
-			this.invAmulet.markDirty();
-		}
+                if (itemstack1 == null && !(slot instanceof SlotActiveAmulet)
+                    || itemstack1 == null && slot instanceof SlotActiveAmulet
+                        && !((SlotActiveAmulet) slot).isLocked()) {
+                    slot.putStack(par1ItemStack.copy());
+                    slot.onSlotChanged();
+                    par1ItemStack.stackSize = 0;
+                    flag1 = true;
+                    break;
+                }
 
-		return flag1;
-	}
+                if (par4) {
+                    --k;
+                } else {
+                    ++k;
+                }
+            }
+        } else {
+            this.invAmulet.markDirty();
+        }
 
-	@Override
-	public ItemStack transferStackInSlot(EntityPlayer player, int par2)
-	{
-		ItemStack itemstack = null;
-		Slot slot = (Slot) this.inventorySlots.get(par2);
+        return flag1;
+    }
 
-		if (slot != null && slot.getHasStack())
-		{
-			ItemStack itemstack1 = slot.getStack();
-			itemstack = itemstack1.copy();
+    @Override
+    public ItemStack transferStackInSlot(EntityPlayer player, int par2) {
+        ItemStack itemstack = null;
+        Slot slot = (Slot) this.inventorySlots.get(par2);
 
-			if (par2 < invStart || par2 > invEnd)
-			{
-				if (!this.mergeItemStack(itemstack1, 3, 28, true))
-				{
-					return null;
-				}
+        if (slot != null && slot.getHasStack()) {
+            ItemStack itemstack1 = slot.getStack();
+            itemstack = itemstack1.copy();
 
-				slot.onSlotChange(itemstack1, itemstack);
-			}
-			else
-			{
-				if (itemstack1.getItem() instanceof ItemAmulet)
-				{
-					if (!this.mergeItemStack(itemstack1, 0, 28, false))
-					{
-						return null;
-					}
-				}
-			}
+            if (par2 < invStart || par2 > invEnd) {
+                if (!this.mergeItemStack(itemstack1, 3, 28, true)) {
+                    return null;
+                }
 
-			if (itemstack1.stackSize == 0)
-			{
-				slot.putStack((ItemStack) null);
-			}
-			else
-			{
-				slot.onSlotChanged();
-			}
+                slot.onSlotChange(itemstack1, itemstack);
+            } else {
+                if (itemstack1.getItem() instanceof ItemAmulet) {
+                    if (!this.mergeItemStack(itemstack1, 0, 28, false)) {
+                        return null;
+                    }
+                }
+            }
 
-			if (itemstack1.stackSize == itemstack.stackSize)
-			{
-				return null;
-			}
+            if (itemstack1.stackSize == 0) {
+                slot.putStack((ItemStack) null);
+            } else {
+                slot.onSlotChanged();
+            }
 
-			slot.onPickupFromSlot(player, itemstack1);
-		}
+            if (itemstack1.stackSize == itemstack.stackSize) {
+                return null;
+            }
 
-		return itemstack;
-	}
+            slot.onPickupFromSlot(player, itemstack1);
+        }
+
+        return itemstack;
+    }
 
 }

@@ -5,9 +5,9 @@ import net.minecraft.world.World;
 
 public interface IMultiPart {
 
-	World getWorld();
+    World getWorld();
 
-	boolean attackEntityFromPart(EntityPart entity, DamageSource source, float damage);
+    boolean attackEntityFromPart(EntityPart entity, DamageSource source, float damage);
 
-	EntityPart getDefaultPart();
+    EntityPart getDefaultPart();
 }
