@@ -35,14 +35,16 @@ public class TragicMusicTicker implements IUpdatePlayerListBox {
         new ResourceLocation("tragicmc:music.dimension.catacombs"),
         1200,
         3600);
-    public static TragicMusic synapseTrack = new TragicMusic(
-        new ResourceLocation("tragicmc:music.dimension.sanctuary"),
-        200,
-        600);
+
     public static TragicMusic synapseOverlord = new TragicMusic(
         new ResourceLocation("tragicmc:music.dimension.prime"),
         0,
         0);
+
+    public static TragicMusic synapseTrack = new TragicMusic(
+        new ResourceLocation("tragicmc:music.dimension.sanctuary"),
+        200,
+        600);
 
     public TragicMusicTicker(Minecraft mc) {
         this.mc = mc;

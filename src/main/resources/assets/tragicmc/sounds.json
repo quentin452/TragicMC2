@@ -1,58 +1,4 @@
 {
-    "records.starstruck":
-    {
-        "category": "record",
-        "sounds": [{
-            "name": "record/starstruck", "stream": "true"}]
-    },
-    "records.faultless":
-    {
-        "category": "record",
-        "sounds": [{
-            "name": "record/faultless", "stream": "true"}]
-    },
-    "records.transmissions":
-    {
-        "category": "record",
-        "sounds": [{
-            "name": "record/transmissions", "stream": "true"}]
-    },
-    "records.atrophy":
-    {
-        "category": "record",
-        "sounds": [{
-            "name": "record/atrophy", "stream": "true"}]
-    },
-    "records.archaic":
-    {
-        "category": "record",
-        "sounds": [{
-            "name": "record/archaic", "stream": "true"}]
-    },
-    "records.system":
-    {
-        "category": "record",
-        "sounds": [{
-            "name": "record/system", "stream": "true"}]
-    },
-    "records.untitled":
-    {
-        "category": "record",
-        "sounds": [{
-            "name": "record/untitled", "stream": "true"}]
-    },
-    "records.mirrors":
-    {
-        "category": "record",
-        "sounds": [{
-            "name": "record/mirrors", "stream": "true"}]
-    },
-    "records.untitled2":
-    {
-        "category": "record",
-        "sounds": [{
-            "name": "record/untitled2", "stream": "true"}]
-    },
 	"boss.aegar.harshhurt":
     {
 		"category": "hostile",
@@ -1086,12 +1032,6 @@
 			"mob/wisp/release", "mob/wisp/release2",
 			"mob/wisp/release3", "mob/wisp/release4"]
     },
-	"music.dimension.amorbis":
-    {
-		"category": "music",
-		"sounds": [{
-			"name": "music/dimension/amorbis", "stream": "true"}]
-    },
 	"music.dimension.bog":
     {
 		"category": "music",
@@ -1104,18 +1044,6 @@
 		"sounds": [{
 			"name": "music/dimension/catacombs", "stream": "true"}]
     },
-	"music.dimension.darkechoes":
-    {
-		"category": "music",
-		"sounds": [{
-			"name": "music/dimension/darkechoes", "stream": "true"}]
-    },
-	"music.dimension.hunters":
-    {
-		"category": "music",
-		"sounds": [{
-			"name": "music/dimension/hunters", "stream": "true"}]
-    },	
 	"music.dimension.prime":
     {
 		"category": "music",
