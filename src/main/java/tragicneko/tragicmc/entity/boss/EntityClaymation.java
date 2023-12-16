@@ -186,7 +186,7 @@ public class EntityClaymation extends TragicBoss {
     /**
      * 0 is the normal form, 1 is the Minotaur, 2 is the Apis, 3 is the Stin King, 4 is Nor-Vox, 5 is Jabba, 6 is Ragr,
      * 7 is Skultar, 8 is Kitsunakuma, 9 is Iron Golem
-     * 
+     *
      * @return
      */
     public int getEntityForm() {
@@ -1748,18 +1748,16 @@ public class EntityClaymation extends TragicBoss {
     }
 
     @Override
-    protected void dropFewItems(boolean flag, int l) {
-        super.dropFewItems(flag, l);
-        if (!this.worldObj.isRemote && TragicConfig.allowMobStatueDrops
-            && rand.nextInt(100) <= TragicConfig.mobStatueDropChance
-            && this.getAllowLoot())
-            this.capturedDrops.add(
-                new EntityItem(
-                    this.worldObj,
-                    this.posX,
-                    this.posY,
-                    this.posZ,
-                    new ItemStack(TragicItems.MobStatue, 1, 15)));
+    protected void dropFewItems(boolean flag, int lootingLevel) {
+        if (this.getEntityForm() == 0) {
+            super.dropFewItems(flag, lootingLevel);
+
+            if (!this.worldObj.isRemote && TragicConfig.allowMobStatueDrops && this.rand.nextInt(100) <= TragicConfig.mobStatueDropChance && this.getAllowLoot()) {
+                ItemStack itemStack = new ItemStack(TragicItems.MobStatue, 1, 15);
+                EntityItem entityItem = new EntityItem(this.worldObj, this.posX, this.posY, this.posZ, itemStack);
+                this.capturedDrops.add(entityItem);
+            }
+        }
     }
 
     @Override
