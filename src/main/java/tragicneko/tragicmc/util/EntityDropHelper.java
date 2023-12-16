@@ -571,7 +571,6 @@ public class EntityDropHelper {
         stack[13] = new ItemStack(TragicItems.IceAmulet);
         stack[14] = new ItemStack(TragicItems.SnowGolemAmulet);
         stack[15] = new ItemStack(TragicItems.IronGolemAmulet);
-        if (flag) stack[16] = new ItemStack(TragicItems.EndermanAmulet);
 
         stack[17] = new ItemStack(TragicItems.SpiderAmulet);
         stack[18] = new ItemStack(TragicItems.StinAmulet);

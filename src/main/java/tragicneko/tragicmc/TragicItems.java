@@ -184,7 +184,6 @@ public class TragicItems {
     public static Item IceAmulet;
     public static Item SnowGolemAmulet;
     public static Item IronGolemAmulet;
-    public static Item EndermanAmulet;
     public static Item WitherAmulet;
     public static Item SpiderAmulet;
     public static Item StinAmulet;
@@ -1389,9 +1388,6 @@ public class TragicItems {
             IronGolemAmulet = (new AmuletIronGolem());
             GameRegistry.registerItem(IronGolemAmulet, "ironGolemAmulet");
 
-            EndermanAmulet = (new ItemAmulet("Enderman", EnumAmuletType.CURSED, ItemAmulet.COLOR_BLACK, 0xB547DE));
-            GameRegistry.registerItem(EndermanAmulet, "endermanAmulet");
-
             WitherAmulet = (new ItemAmulet("Wither", EnumAmuletType.EPIC, ItemAmulet.COLOR_BLACK, 0x245238));
             GameRegistry.registerItem(WitherAmulet, "witherAmulet");
 
@@ -1623,7 +1619,6 @@ public class TragicItems {
             new WeightedRandomChestContent(new ItemStack(IceAmulet, 1), 1, 1, TragicConfig.amuletOverallRarity),
             new WeightedRandomChestContent(new ItemStack(SnowGolemAmulet, 1), 1, 1, TragicConfig.amuletOverallRarity),
             new WeightedRandomChestContent(new ItemStack(IronGolemAmulet, 1), 1, 1, TragicConfig.amuletOverallRarity),
-            new WeightedRandomChestContent(new ItemStack(EndermanAmulet, 1), 1, 1, TragicConfig.amuletOverallRarity),
             new WeightedRandomChestContent(new ItemStack(GuiltyThorn, 1), 1, 1, 15),
             new WeightedRandomChestContent(new ItemStack(GravitySpike, 1), 1, 1, 15),
             new WeightedRandomChestContent(new ItemStack(FrozenLightning, 1), 1, 1, 15),
@@ -1690,7 +1685,6 @@ public class TragicItems {
             new WeightedRandomChestContent(new ItemStack(IceAmulet, 1), 1, 1, TragicConfig.amuletOverallRarity),
             new WeightedRandomChestContent(new ItemStack(SnowGolemAmulet, 1), 1, 1, TragicConfig.amuletOverallRarity),
             new WeightedRandomChestContent(new ItemStack(IronGolemAmulet, 1), 1, 1, TragicConfig.amuletOverallRarity),
-            new WeightedRandomChestContent(new ItemStack(EndermanAmulet, 1), 1, 1, TragicConfig.amuletOverallRarity),
             new WeightedRandomChestContent(new ItemStack(Talisman), 1, 1, 10),
             new WeightedRandomChestContent(new ItemStack(BloodSacrifice), 1, 1, 10),
             new WeightedRandomChestContent(new ItemStack(NourishmentSacrifice), 1, 1, 10),

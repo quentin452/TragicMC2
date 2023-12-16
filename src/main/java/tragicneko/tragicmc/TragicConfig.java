@@ -52,7 +52,7 @@ public class TragicConfig {
     public static boolean amuPeace, amuYeti, amuClaymation, amuChicken, amuBlacksmith, amuCreeper, amuZombie,
         amuSkeleton, amuIce, amuSnowGolem, amuIronGolem;
     public static boolean amuSpider, amuStin, amuSupernatural, amuFusea, amuLuck, amuKitsune, amuMartyr, amuPiercing,
-        amuApis, amuSunken, amuEnderman, amuPolaris, amuLightning;
+        amuApis, amuSunken, amuPolaris, amuLightning;
     public static boolean amuConsumption, amuUndead, amuEnderDragon, amuTime, amuWither, amuOverlord, amuEnyvil;
 
     public static boolean sphereGenUsesFilter, eraserUsesFilter, spikeGenUsesFilter, voidPitUsesFilter;
@@ -4499,7 +4499,6 @@ public class TragicConfig {
         amuPiercing = amuletEffects[++m];
         amuApis = amuletEffects[++m];
         amuSunken = amuletEffects[++m];
-        amuEnderman = amuletEffects[++m];
         amuPolaris = amuletEffects[++m];
         amuLightning = amuletEffects[++m];
         amuConsumption = amuletEffects[++m];
@@ -4833,7 +4832,7 @@ public class TragicConfig {
 
     /**
      * Basically averages each value to go to the nearest 5
-     * 
+     *
      * @param cost
      * @return
      */

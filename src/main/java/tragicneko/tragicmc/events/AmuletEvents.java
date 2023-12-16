@@ -499,43 +499,6 @@ public class AmuletEvents {
         }
     }
 
-    @SubscribeEvent
-    public void onEndermanAmuletUse(BreakEvent event) {
-        if (TragicConfig.amuEnderman && event.getPlayer() != null
-            && event.getPlayer()
-                .getEquipmentInSlot(0) == null
-            && event.getPlayer() instanceof EntityPlayerMP) {
-            EntityPlayerMP mp = (EntityPlayerMP) event.getPlayer();
-            PropertyAmulets amu = PropertyAmulets.get(mp);
-
-            if (amu == null) return;
-
-            int[] levels = new int[3];
-            ItemAmulet[] amulets = new ItemAmulet[3];
-            int i;
-
-            for (i = 0; i < 3; i++) {
-                amulets[i] = amu.getActiveAmulet(i);
-                levels[i] = AmuletHelper.getAmuletLevel(amu.getActiveAmuletItemStack(i));
-            }
-
-            for (i = 0; i < 3; i++) {
-                if (amulets[i] != null && amulets[i] == TragicItems.EndermanAmulet) {
-                    mp.worldObj.setBlockToAir(event.x, event.y, event.z);
-                    EntityItem item = new EntityItem(
-                        mp.worldObj,
-                        event.x,
-                        event.y,
-                        event.z,
-                        new ItemStack(event.block, 1, event.blockMetadata));
-                    mp.worldObj.spawnEntityInWorld(item);
-                    if (event.isCancelable()) event.setCanceled(true);
-                    break;
-                }
-            }
-        }
-    }
-
     public static boolean DO_REFLECTION = true;
 
     @SubscribeEvent

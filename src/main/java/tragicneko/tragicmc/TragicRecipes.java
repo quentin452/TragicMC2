@@ -1557,18 +1557,6 @@ public class TragicRecipes {
                 TragicItems.AwakeningStone);
 
             GameRegistry.addShapedRecipe(
-                new ItemStack(TragicItems.EndermanAmulet, 1),
-                "xyx",
-                "yzy",
-                "xyx",
-                'x',
-                TragicItems.Tungsten,
-                'y',
-                Items.ender_pearl,
-                'z',
-                TragicItems.AwakeningStone);
-
-            GameRegistry.addShapedRecipe(
                 new ItemStack(TragicItems.WitherAmulet, 1),
                 "xyx",
                 "yzy",
