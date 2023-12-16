@@ -7,6 +7,7 @@ import net.minecraft.block.BlockBush;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -58,11 +59,15 @@ public class BlockAeris extends BlockBush implements ITileEntityProvider {
     }
 
     @Override
-    public void breakBlock(World p_149749_1_, int p_149749_2_, int p_149749_3_, int p_149749_4_, Block p_149749_5_,
-        int p_149749_6_) {
-        super.breakBlock(p_149749_1_, p_149749_2_, p_149749_3_, p_149749_4_, p_149749_5_, p_149749_6_);
-        p_149749_1_.removeTileEntity(p_149749_2_, p_149749_3_, p_149749_4_);
+    public void breakBlock(World world, int x, int y, int z, Block block, int meta) {
+        float hardness = block.getBlockHardness(world, x, y, z);
+        if (block == Blocks.bedrock || hardness <= 0) {
+            return;
+        }
+        super.breakBlock(world, x, y, z, block, meta);
+        world.removeTileEntity(x, y, z);
     }
+
 
     @Override
     public boolean onBlockEventReceived(World p_149696_1_, int p_149696_2_, int p_149696_3_, int p_149696_4_,
