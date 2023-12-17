@@ -360,17 +360,35 @@ public class EnchantmentEvents {
                 }
 
                 if (TragicConfig.allowConsume) {
-                    int consume = EnchantmentHelper
-                        .getEnchantmentLevel(TragicEnchantments.Consume.effectId, player.getCurrentEquippedItem());
+                    int consume = EnchantmentHelper.getEnchantmentLevel(TragicEnchantments.Consume.effectId, player.getCurrentEquippedItem());
 
-                    if (consume > 0 && rand.nextInt(10 - (consume * 2)) == 0 && rand.nextInt(3) == 0) {
+                    if (consume > 0 && consume < 5) {
+                        int bound = Math.max(1, 10 - (consume * 2));
+
+                        if (rand.nextInt(bound) == 0 && rand.nextInt(3) == 0) {
+                            PropertyDoom property1 = PropertyDoom.get(player);
+
+                            if (property1 != null && TragicConfig.allowDoom) {
+                                property1.increaseDoom(consume);
+
+                                if (event.entityLiving instanceof EntityPlayer) {
+                                    PropertyDoom property2 = PropertyDoom.get((EntityPlayer) event.entityLiving);
+                                    property2.increaseDoom(-consume);
+                                }
+
+                                if (rand.nextInt(3) == 0) {
+                                    player.attackEntityFrom(DamageSource.generic, consume);
+                                }
+                            }
+                        }
+                    } else if (consume >= 5) {
                         PropertyDoom property1 = PropertyDoom.get(player);
 
                         if (property1 != null && TragicConfig.allowDoom) {
                             property1.increaseDoom(consume);
+
                             if (event.entityLiving instanceof EntityPlayer) {
                                 PropertyDoom property2 = PropertyDoom.get((EntityPlayer) event.entityLiving);
-
                                 property2.increaseDoom(-consume);
                             }
 
@@ -390,7 +408,7 @@ public class EnchantmentEvents {
                             event.ammount *= 1.125F;
                         }
                         if (player instanceof EntityPlayerMP)
-                            ((EntityPlayerMP) player).triggerAchievement(TragicAchievements.enchant);
+                            player.triggerAchievement(TragicAchievements.enchant);
                     }
                 }
             }
