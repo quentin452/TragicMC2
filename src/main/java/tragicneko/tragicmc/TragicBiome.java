@@ -156,7 +156,7 @@ public class TragicBiome extends BiomeGenBase {
         byte b0 = (byte) (this.field_150604_aj & 255);
         Block block1 = this.fillerBlock;
         int k = -1;
-        int l = (int) (z / 3.0D + 3.0D + rand.nextInt() * 0.25D);
+        int l = (int)(z / 3.0D + 3.0D + rand.nextDouble() * 0.25D);
         int i1 = x & 15;
         int j1 = y & 15;
         int k1 = blockArray.length / 256;
@@ -164,7 +164,7 @@ public class TragicBiome extends BiomeGenBase {
         for (int l1 = 255; l1 >= 0; --l1) {
             int i2 = (j1 * 16 + i1) * k1 + l1;
 
-            if (l1 <= rand.nextInt(5)) {
+            if (l1 <= 0 + rand.nextInt(5)) {
                 blockArray[i2] = Blocks.air;
             } else {
                 Block block2 = blockArray[i2];
