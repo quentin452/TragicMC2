@@ -73,7 +73,7 @@ public class Structure extends WorldGenerator {
 
     /**
      * Override to set a variant amount for a particular structure
-     * 
+     *
      * @return
      */
     public int getVariantSize() {
@@ -82,7 +82,7 @@ public class Structure extends WorldGenerator {
 
     /**
      * Whether or not this particular structure should only generate on a solid surface
-     * 
+     *
      * @return
      */
     public boolean isSurfaceStructure() {
@@ -91,7 +91,7 @@ public class Structure extends WorldGenerator {
 
     /**
      * Check if the structure is in the correct dimension
-     * 
+     *
      * @param dim
      * @return
      */
@@ -101,7 +101,7 @@ public class Structure extends WorldGenerator {
 
     /**
      * Check if the starting coords for the structure are valid, may check a larger area as well
-     * 
+     *
      * @param world
      * @param x
      * @param y
@@ -110,25 +110,25 @@ public class Structure extends WorldGenerator {
      * @return
      */
     public boolean areCoordsValidForGeneration(World world, int x, int y, int z, Random rand) {
-        if (!validBlocks.contains(world.getBlock(x, y, z)) || y + this.height >= world.provider.getActualHeight())
+        if (!world.getChunkProvider().chunkExists(x >> 4, z >> 4)) return false;
+
+        if (!validBlocks.contains(world.getBlock(x, y, z)) || y + this.height >= world.provider.getActualHeight()) {
             return false;
+        }
 
         if (this.isSurfaceStructure()) {
-            if (y <= 50 || !World.doesBlockHaveSolidTopSurface(world, x, y - 1, z)
-                || !world.getBlock(x, y - 1, z)
-                    .isOpaqueCube()
-                || !world.canBlockSeeTheSky(x, y, z)) return false;
+            if (y <= 50 || !World.doesBlockHaveSolidTopSurface(world, x, y - 1, z) || !world.getBlock(x, y - 1, z).isOpaqueCube() || !world.canBlockSeeTheSky(x, y, z)) {
+                return false;
+            }
 
             for (int y1 = 0; y1 < this.height; y1++) {
-                if (!validBlocks.contains(world.getBlock(x, y + y1 + 1, z))) return false;
+                if (!validBlocks.contains(world.getBlock(x, y + y1 + 1, z)) || !world.getChunkProvider().chunkExists(x >> 4, (z + y1) >> 4) || !world.getChunkProvider().chunkExists(x >> 4, (z - y1) >> 4)) {
+                    return false;
+                }
             }
         } else {
             for (int y1 = 0; y1 < this.height; y1++) {
-                if (!validBlocks.contains(world.getBlock(x, y - y1, z))
-                    || !validBlocks.contains(world.getBlock(x - y1, y, z))
-                    || !validBlocks.contains(world.getBlock(x + y1, y, z))
-                    || !validBlocks.contains(world.getBlock(x, y, z + y1))
-                    || !validBlocks.contains(world.getBlock(x, y, z - y1))) {
+                if (!validBlocks.contains(world.getBlock(x, y - y1, z)) || !world.getChunkProvider().chunkExists((x + y1) >> 4, z >> 4) || !world.getChunkProvider().chunkExists((x - y1) >> 4, z >> 4) || !validBlocks.contains(world.getBlock(x, y, z + y1)) || !validBlocks.contains(world.getBlock(x, y, z - y1))) {
                     return false;
                 }
             }
@@ -140,7 +140,7 @@ public class Structure extends WorldGenerator {
      * Specific checks for particular structures, this should be where to check things like if the structure is allowed
      * in the config or if a valid variant
      * id is set, etc.
-     * 
+     *
      * @param rand
      * @param variantID
      * @return
@@ -152,7 +152,7 @@ public class Structure extends WorldGenerator {
     /**
      * Returns whether a structure can generate based on the configured rarity value out of the integer value to compare
      * to
-     * 
+     *
      * @param compare
      * @return
      */
@@ -173,7 +173,7 @@ public class Structure extends WorldGenerator {
      * Must be overridden by each structure to actually generate their schematics, this just does generic preliminary
      * checks, also note that
      * this is how structure seeds generate structures
-     * 
+     *
      * @param variant
      * @param world
      * @param rand

@@ -36,7 +36,6 @@ public class RuggedTerrainWorldGen implements IWorldGen {
 
     @Override
     public void generate(Random random, int chunkX, int chunkZ, World world) {
-
         if (!TragicConfig.allowScatteredSurfaceGen) return;
 
         int x = (chunkX * 16) + random.nextInt(16);
@@ -58,18 +57,17 @@ public class RuggedTerrainWorldGen implements IWorldGen {
                 for (int[] coords : list) {
                     if (random.nextInt(16) != 0) continue;
 
-                    block = world.getBlock(coords[0], coords[1], coords[2]);
-                    if (!world.getBlock(coords[0], coords[1] - 1, coords[2])
-                        .isOpaqueCube()) continue;
+                    if (!world.blockExists(coords[0], coords[1], coords[2])) continue;
 
-                    if (block == this.toReplace || block.getMaterial() == Material.air && this.replacesAir
+                    block = world.getBlock(coords[0], coords[1], coords[2]);
+                    if (!world.blockExists(coords[0], coords[1] - 1, coords[2]) || !world.getBlock(coords[0], coords[1] - 1, coords[2]).isOpaqueCube()) continue;
+
+                    if (block == this.toReplace || (block.isAir(world, coords[0], coords[1], coords[2]) && this.replacesAir)
                         || block instanceof BlockGenericTallGrass) {
                         world.setBlock(coords[0], coords[1], coords[2], this.block, meta, 2);
                     }
                 }
             }
-
         }
     }
-
 }

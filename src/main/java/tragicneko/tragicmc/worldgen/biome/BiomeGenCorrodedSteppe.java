@@ -106,36 +106,19 @@ public class BiomeGenCorrodedSteppe extends TragicBiome {
         super.decorate(world, rand, x, z);
 
         byte mew = (byte) (variant > 2 ? 4 : (variant == 2 ? 16 : 8));
-        int k;
-        int l;
 
         for (byte a = 0; a < mew; ++a) {
-            k = x + rand.nextInt(16) - 8;
-            l = z + rand.nextInt(16) - 8;
+            int k = x * 16 + rand.nextInt(16) - 8;
+            int l = z * 16 + rand.nextInt(16) - 8;
             this.vineGen.generate(world, rand, k, rand.nextInt(64) + 42, l);
         }
 
         int Xcoord = (x * 16) + rand.nextInt(16);
         int Zcoord = (z * 16) + rand.nextInt(16);
         int Ycoord = rand.nextInt(236) + 10;
-        ArrayList<int[]> cands;
-        cands = WorldHelper.getBlocksInSphericalRange(world, 3.75, Xcoord, Ycoord, Zcoord);
-        Block block;
-        boolean flag = true;
 
-        for (int[] coords : cands) {
-            block = world.getBlock(coords[0], coords[1], coords[2]);
-            if (!block.isOpaqueCube() || block.getMaterial() == Material.air
-                || block.getMaterial()
-                    .isLiquid()) {
-                flag = false;
-                break;
-            }
-        }
-
-        if (flag) {
-            cands = WorldHelper.getBlocksInSphericalRange(world, 2.75, Xcoord, Ycoord, Zcoord);
-            for (int[] coords : cands) world.setBlock(coords[0], coords[1], coords[2], TragicBlocks.ExplosiveGas, 0, 2);
+        if (isGasSpawnValid(world, Xcoord, Ycoord, Zcoord)) {
+            generateExplosiveGas(world, rand, Xcoord, Ycoord, Zcoord);
         }
 
         this.gasGen.generate(rand, x / 16, z / 16, world);
@@ -155,6 +138,43 @@ public class BiomeGenCorrodedSteppe extends TragicBiome {
         if (TragicConfig.allowVoidPitGen && variant == 4 && rand.nextInt(200) >= 5)
             this.voidPitGen.generate(rand, x / 16, z / 16, world);
         if (rand.nextInt(8) == 0) this.deathglowGen.generate(rand, x / 16, z / 16, world);
+    }
+    private boolean isGasSpawnValid(World world, int x, int y, int z) {
+        if (world == null || !world.blockExists(x, y, z)) {
+            return false;
+        }
+
+        boolean flag = true;
+
+        for (int xOffset = -4; xOffset <= 4 && flag; xOffset++) {
+            for (int yOffset = -4; yOffset <= 4 && flag; yOffset++) {
+                for (int zOffset = -4; zOffset <= 4 && flag; zOffset++) {
+                    int blockX = x + xOffset;
+                    int blockY = y + yOffset;
+                    int blockZ = z + zOffset;
+
+                    if (!world.blockExists(blockX, blockY, blockZ)) {
+                        flag = false;
+                    } else {
+                        Block block = world.getBlock(blockX, blockY, blockZ);
+                        if (!block.isOpaqueCube() || block.getMaterial() == Material.air || block.getMaterial().isLiquid()) {
+                            flag = false;
+                        }
+                    }
+                }
+            }
+        }
+
+        return flag;
+    }
+
+
+
+    private void generateExplosiveGas(World world, Random rand, int x, int y, int z) {
+        ArrayList<int[]> cands = WorldHelper.getBlocksInSphericalRange(world, 2.75, x, y, z);
+        for (int[] coords : cands) {
+            world.setBlock(coords[0], coords[1], coords[2], TragicBlocks.ExplosiveGas, 0, 2);
+        }
     }
 
 }

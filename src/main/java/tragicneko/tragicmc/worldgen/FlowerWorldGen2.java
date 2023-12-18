@@ -2,9 +2,9 @@ package tragicneko.tragicmc.worldgen;
 
 import java.util.Random;
 
+import net.minecraft.block.Block;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
-
 import tragicneko.tragicmc.TragicBiome;
 import tragicneko.tragicmc.TragicBlocks;
 import tragicneko.tragicmc.TragicConfig;
@@ -22,12 +22,11 @@ public class FlowerWorldGen2 implements IWorldGen {
 
     @Override
     public void generate(Random random, int chunkX, int chunkZ, World world) {
-
         if (!TragicConfig.allowFlowerGen) return;
-        int Xcoord = (chunkX * 16);
-        int Zcoord = (chunkZ * 16);
-        int Ycoord = world.getTopSolidOrLiquidBlock(Xcoord, Zcoord);
-        BiomeGenBase biome = world.getBiomeGenForCoords(Xcoord, Zcoord);
+
+        int baseX = (chunkX * 16);
+        int baseZ = (chunkZ * 16);
+        BiomeGenBase biome = world.getBiomeGenForCoords(baseX, baseZ);
         BlockTragicFlower flower = (BlockTragicFlower) TragicBlocks.TragicFlower2;
         byte meta;
 
@@ -50,15 +49,21 @@ public class FlowerWorldGen2 implements IWorldGen {
         if (random.nextInt(100) == 0) meta = 12; // nannon is even more rare
 
         for (byte i = 0; i < trBiome.getFlowersFromBiomeType(); i++) {
-            Xcoord += random.nextInt(8) - random.nextInt(8);
-            Zcoord += random.nextInt(8) - random.nextInt(8);
-            Ycoord += random.nextInt(2) - random.nextInt(2);
+            int xOffset = random.nextInt(8) - random.nextInt(8);
+            int zOffset = random.nextInt(8) - random.nextInt(8);
+            int yOffset = random.nextInt(2) - random.nextInt(2);
 
-            if (world.isAirBlock(Xcoord, Ycoord, Zcoord) && Ycoord < 255
-                && flower.canBlockStay(world, Xcoord, Ycoord, Zcoord)) {
-                world.setBlock(Xcoord, Ycoord, Zcoord, flower, meta, 2);
+            int x = baseX + xOffset;
+            int z = baseZ + zOffset;
+            int y = world.getTopSolidOrLiquidBlock(x, z) + yOffset;
+
+            // Add additional checks to prevent cascading updates
+            if (y < 0 || y > 255 || !world.isAirBlock(x, y, z) || !flower.canBlockStay(world, x, y, z)) {
+                continue;
             }
+
+            world.setBlock(x, y, z, flower, meta, 2);
+            break; // Exit loop after successfully placing one flower
         }
     }
-
 }

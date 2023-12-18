@@ -37,7 +37,6 @@ public class SurfaceWorldGen implements IWorldGen {
 
     @Override
     public void generate(Random random, int chunkX, int chunkZ, World world) {
-
         if (!TragicConfig.allowScatteredSurfaceGen) return;
 
         int x = (chunkX * 16) + random.nextInt(16);
@@ -45,7 +44,7 @@ public class SurfaceWorldGen implements IWorldGen {
         int y = world.getTopSolidOrLiquidBlock(x, z);
         double radius = (this.variation * random.nextDouble()) + this.radius;
         ArrayList<int[]> list;
-        int[] coords = new int[] { x, y, z };
+        int[] coords = new int[]{x, y, z};
         Block block;
 
         for (byte y1 = -1; y1 < 2; y1++) {
@@ -56,30 +55,40 @@ public class SurfaceWorldGen implements IWorldGen {
 
             list = WorldHelper.getBlocksInCircularRange(world, radius, x, y + y1, z);
 
-            for (int i = 0; i < list.size(); i++) {
-                coords = list.get(i);
+            for (int[] ints : list) {
+                coords = ints;
+                if (!world.blockExists(coords[0], coords[1], coords[2])) continue;
+
                 block = world.getBlock(coords[0], coords[1], coords[2]);
 
-                if (this.doesAirCheck && world.getBlock(coords[0], coords[1] + 1, coords[2])
-                    .getMaterial() != Material.air) continue;
-                if (block == this.toReplace) world.setBlock(coords[0], coords[1], coords[2], this.block, meta, 2);
+                if (this.doesAirCheck && world.getBlock(coords[0], coords[1] + 1, coords[2]).getMaterial() != Material.air)
+                    continue;
+
+                if (block == this.toReplace) {
+                    world.setBlock(coords[0], coords[1], coords[2], this.block, meta, 2);
+                }
             }
         }
 
         for (byte k = 0; k < this.iterations && this.usesAltGen; k++) {
+            if (!world.blockExists(coords[0], coords[1], coords[2])) continue;
+
             block = world.getBlock(coords[0], coords[1], coords[2]);
             list = WorldHelper.getBlocksAdjacent(coords);
 
             for (int[] cand2 : list) {
+                if (!world.blockExists(cand2[0], cand2[1], cand2[2])) continue;
+
                 block = world.getBlock(cand2[0], cand2[1], cand2[2]);
-                if (this.doesAirCheck && world.getBlock(coords[0], coords[1] + 1, coords[2])
-                    .getMaterial() != Material.air) continue;
-                if (block == this.toReplace && random.nextBoolean())
+
+                if (this.doesAirCheck && world.getBlock(coords[0], coords[1] + 1, coords[2]).getMaterial() != Material.air) continue;
+
+                if (block == this.toReplace && random.nextBoolean()) {
                     world.setBlock(cand2[0], cand2[1], cand2[2], this.block, meta, 2);
+                }
             }
 
-            coords = list.get(random.nextInt(list.size()));
+            coords = list.isEmpty() ? coords : list.get(random.nextInt(list.size()));
         }
     }
-
 }

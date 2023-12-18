@@ -75,19 +75,15 @@ public class BiomeGenScorchedWasteland extends TragicBiome {
     public void decorate(World world, Random rand, int x, int z) {
         super.decorate(world, rand, x, z);
 
-        int Xcoord = (x * 16) + rand.nextInt(16);
-        int Zcoord = (z * 16) + rand.nextInt(16);
-        int Ycoord = world.getTopSolidOrLiquidBlock(Xcoord, Zcoord) - 1;
-
+        int Xcoord, Zcoord, Ycoord;
         byte mew = (byte) (variant == 2 ? 8 : 2);
         ArrayList<int[]> cands = new ArrayList<int[]>();
         Block block;
 
-        byte i;
-
-        for (i = 0; i < mew; i++) {
+        for (byte i = 0; i < mew; i++) {
             Xcoord = (x * 16) + rand.nextInt(16);
             Zcoord = (z * 16) + rand.nextInt(16);
+            if (!world.getChunkProvider().chunkExists(Xcoord >> 4, Zcoord >> 4)) continue;
             Ycoord = world.getTopSolidOrLiquidBlock(Xcoord, Zcoord) - 1;
 
             block = world.getBlock(Xcoord, Ycoord, Zcoord);
@@ -97,47 +93,53 @@ public class BiomeGenScorchedWasteland extends TragicBiome {
             }
         }
 
-        mew = (byte) (variant == 2 ? 10 : 5);
-
-        for (i = 0; i < mew; i++) {
+        for (byte i = 0; i < mew; i++) {
             Xcoord = (x * 16) + rand.nextInt(16);
             Zcoord = (z * 16) + rand.nextInt(16);
+            if (!world.getChunkProvider().chunkExists(Xcoord >> 4, Zcoord >> 4)) continue;
             Ycoord = world.getTopSolidOrLiquidBlock(Xcoord, Zcoord) - 1;
 
             block = world.getBlock(Xcoord, Ycoord, Zcoord);
-            if (block == TragicBlocks.MoltenRock && rand.nextInt(4) == 0)
+            if (block == TragicBlocks.MoltenRock && rand.nextInt(4) == 0) {
                 world.setBlock(Xcoord, Ycoord, Zcoord, TragicBlocks.SteamVent);
+            }
         }
 
-        mew = (byte) (variant == 0 ? 8 : 2);
-
-        for (i = 0; i < mew; i++) {
+        for (byte i = 0; i < mew; i++) {
             Xcoord = (x * 16) + rand.nextInt(16);
             Zcoord = (z * 16) + rand.nextInt(16);
+            if (!world.getChunkProvider().chunkExists(Xcoord >> 4, Zcoord >> 4)) continue;
             Ycoord = world.getTopSolidOrLiquidBlock(Xcoord, Zcoord) - 1;
 
             block = world.getBlock(Xcoord, Ycoord, Zcoord);
 
             if (block == TragicBlocks.MoltenRock && rand.nextInt(4) == 0) {
                 cands.clear();
-                cands.addAll(
-                    WorldHelper.getBlocksInSphericalRange(
-                        world,
-                        (rand.nextDouble() * 2.25) + 1.5,
-                        Xcoord,
-                        Ycoord - 1,
-                        Zcoord));
+                cands.addAll(WorldHelper.getBlocksInSphericalRange(
+                    world,
+                    (rand.nextDouble() * 2.25) + 1.5,
+                    Xcoord,
+                    Ycoord - 1,
+                    Zcoord));
 
                 for (int[] coords : cands) {
+                    if (!world.getChunkProvider().chunkExists(coords[0] >> 4, coords[2] >> 4)) continue;
                     block = world.getBlock(coords[0], coords[1], coords[2]);
-                    if (block.isReplaceable(world, coords[0], coords[1], coords[2]))
+                    if (block.isReplaceable(world, coords[0], coords[1], coords[2])) {
                         world.setBlock(coords[0], coords[1], coords[2], TragicBlocks.ScorchedRock);
+                    }
                 }
             }
         }
-        if (rand.nextInt(8) == 0) this.pitGen.generate(rand, x / 16, z / 16, world);
+
+        if (rand.nextInt(8) == 0 && world.getChunkProvider().chunkExists(x, z)) {
+            this.pitGen.generate(rand, x / 16, z / 16, world);
+        }
         this.fireGen.generate(rand, x / 16, z / 16, world);
-        if (variant == 2 && rand.nextInt(100) > 3 && rand.nextInt(6) != 0)
+
+        if (variant == 2 && rand.nextInt(100) > 3 && rand.nextInt(6) != 0 && world.getChunkProvider().chunkExists(x, z)) {
             this.scarGen.generate(rand, x / 16, z / 16, world);
+        }
     }
+
 }

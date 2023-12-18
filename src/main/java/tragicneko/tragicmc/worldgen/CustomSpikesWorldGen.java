@@ -49,6 +49,8 @@ public class CustomSpikesWorldGen implements IWorldGen {
         int Xcoord = (chunkX * 16) + random.nextInt(16);
         int Zcoord = (chunkZ * 16) + random.nextInt(16);
         int Ycoord = world.getTopSolidOrLiquidBlock(Xcoord, Zcoord);
+        if (!world.getChunkProvider().chunkExists(chunkX, chunkZ)) return;
+
 
         ArrayList<int[]> list;
         double spikeSize;

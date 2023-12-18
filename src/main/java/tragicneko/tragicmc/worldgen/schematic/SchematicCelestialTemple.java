@@ -79,15 +79,24 @@ public class SchematicCelestialTemple extends Schematic {
 
             byte rnd = (byte) (rand.nextInt(3) + 1);
 
+            // Prevent cascading updates by only modifying blocks if necessary
             for (int[] coords2 : cands) {
+                Block currentBlock = world.getBlock(coords2[0], coords2[1], coords2[2]);
                 if (coords2[1] >= yMax) {
-                    world.setBlock(coords2[0], coords2[1], coords2[2], TragicBlocks.AshenGrass, 0, 2);
+                    if (currentBlock != TragicBlocks.AshenGrass) {
+                        world.setBlock(coords2[0], coords2[1], coords2[2], TragicBlocks.AshenGrass, 0, 2);
+                    }
                 } else if (coords2[1] >= yMax - rnd - rand.nextInt(2)) {
-                    world.setBlock(coords2[0], coords2[1], coords2[2], TragicBlocks.DeadDirt, 0, 2);
+                    if (currentBlock != TragicBlocks.DeadDirt) {
+                        world.setBlock(coords2[0], coords2[1], coords2[2], TragicBlocks.DeadDirt, 0, 2);
+                    }
                 } else {
-                    world.setBlock(coords2[0], coords2[1], coords2[2], TragicBlocks.DarkStone, 0, 2);
+                    if (currentBlock != TragicBlocks.DarkStone) {
+                        world.setBlock(coords2[0], coords2[1], coords2[2], TragicBlocks.DarkStone, 0, 2);
+                    }
                 }
             }
+            cands.clear(); // Clear the list for the next iteration to prevent duplicates
         }
 
         for (byte y1 = 0; y1 < 10; y1++) {
