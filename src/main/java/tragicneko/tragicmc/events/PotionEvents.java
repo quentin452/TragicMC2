@@ -392,51 +392,51 @@ public class PotionEvents {
     @SideOnly(Side.CLIENT)
     @SubscribeEvent
     public void clarifyInvisibleEnemies(LivingUpdateEvent event) {
-        EntityLivingBase entity = event.entityLiving;
-        World world = event.entityLiving.worldObj;
+        if (event.entityLiving.worldObj.isRemote) {
+            EntityLivingBase entity = event.entityLiving;
+            World world = entity.worldObj;
 
-        if (TragicConfig.allowClarity && entity.isPotionActive(TragicPotion.Clarity)) {
-            double d0 = 16.0D + (8.0D * entity.getActivePotionEffect(TragicPotion.Clarity)
-                .getAmplifier());
+            if (TragicConfig.allowClarity && entity.isPotionActive(TragicPotion.Clarity)) {
+                double d0 = 16.0D + (8.0D * entity.getActivePotionEffect(TragicPotion.Clarity).getAmplifier());
 
-            List<Entity> list = world
-                .getEntitiesWithinAABBExcludingEntity(entity, entity.boundingBox.expand(d0, d0, d0));
-            EntityLivingBase target;
+                List<Entity> list = world.getEntitiesWithinAABBExcludingEntity(entity, entity.boundingBox.expand(d0, d0, d0));
+                EntityLivingBase target;
 
-            for (int i = 0; i < list.size(); i++) {
-                if (list.get(i) instanceof EntityLivingBase) {
-                    target = (EntityLivingBase) list.get(i);
-                    if (target.isInvisibleToPlayer(Minecraft.getMinecraft().thePlayer)) {
-                        for (int j = 0; j < 4; j++) {
-                            double d1 = target.width * (rand.nextDouble() - rand.nextDouble());
-                            double d2 = target.height * rand.nextDouble();
-                            double d3 = target.width * (rand.nextDouble() - rand.nextDouble());
-                            EntityPortalFX fx = new EntityPortalFX(
-                                target.worldObj,
-                                target.posX + d1,
-                                target.posY + d2,
-                                target.posZ + d3,
-                                0.0,
-                                0.0,
-                                0.0);
-                            fx.setRBGColorF(1.0F, 1.0F, 1.0F);
-                            Minecraft.getMinecraft().effectRenderer.addEffect(fx);
+                for (int i = 0; i < list.size(); i++) {
+                    if (list.get(i) instanceof EntityLivingBase) {
+                        target = (EntityLivingBase) list.get(i);
+                        if (target.isInvisibleToPlayer(Minecraft.getMinecraft().thePlayer)) {
+                            for (int j = 0; j < 4; j++) {
+                                double d1 = target.width * (rand.nextDouble() - rand.nextDouble());
+                                double d2 = target.height * rand.nextDouble();
+                                double d3 = target.width * (rand.nextDouble() - rand.nextDouble());
+                                EntityPortalFX fx = new EntityPortalFX(
+                                    target.worldObj,
+                                    target.posX + d1,
+                                    target.posY + d2,
+                                    target.posZ + d3,
+                                    0.0,
+                                    0.0,
+                                    0.0);
+                                fx.setRBGColorF(1.0F, 1.0F, 1.0F);
+                                Minecraft.getMinecraft().effectRenderer.addEffect(fx);
+                            }
                         }
                     }
                 }
             }
-        }
 
-        if (TragicConfig.allowDisorientation && event.entityLiving.isPotionActive(TragicPotion.Disorientation)) {
-            if (event.entityLiving.ticksExisted % 60 == 0) {
-                float strafe = rand.nextFloat() * MathHelper.getRandomIntegerInRange(rand, -2, 2);
-                float forward = rand.nextFloat() * MathHelper.getRandomIntegerInRange(rand, -2, 2);
-                event.entityLiving.moveEntityWithHeading(strafe, forward);
-            }
+            if (TragicConfig.allowDisorientation && entity.isPotionActive(TragicPotion.Disorientation)) {
+                if (entity.ticksExisted % 60 == 0) {
+                    float strafe = rand.nextFloat() * MathHelper.getRandomIntegerInRange(rand, -2, 2);
+                    float forward = rand.nextFloat() * MathHelper.getRandomIntegerInRange(rand, -2, 2);
+                    entity.moveEntityWithHeading(strafe, forward);
+                }
 
-            if (event.entityLiving instanceof EntityPlayer) {
-                ((EntityPlayer) event.entityLiving).cameraYaw = (rand.nextFloat() - rand.nextFloat()) * 2.25F;
-                ((EntityPlayer) event.entityLiving).cameraPitch = (rand.nextFloat() - rand.nextFloat()) * 2.25F;
+                if (entity instanceof EntityPlayer) {
+                    ((EntityPlayer) entity).cameraYaw = (rand.nextFloat() - rand.nextFloat()) * 2.25F;
+                    ((EntityPlayer) entity).cameraPitch = (rand.nextFloat() - rand.nextFloat()) * 2.25F;
+                }
             }
         }
     }
