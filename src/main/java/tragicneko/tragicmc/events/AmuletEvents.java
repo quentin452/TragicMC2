@@ -130,92 +130,89 @@ public class AmuletEvents {
 
     @SubscribeEvent
     public void onAmuletTick(LivingUpdateEvent event) {
-        if (event.entityLiving instanceof EntityPlayerMP) {
-            EntityPlayerMP mp = (EntityPlayerMP) event.entityLiving;
-            PropertyAmulets amu = PropertyAmulets.get(mp);
+        if (!(event.entityLiving instanceof EntityPlayerMP)) {
+            return;
+        }
 
-            if (amu == null) return;
-            TragicMC.net
-                .sendTo(new MessageAmulet((EntityPlayer) event.entityLiving), (EntityPlayerMP) event.entityLiving);
+        EntityPlayerMP mp = (EntityPlayerMP) event.entityLiving;
+        PropertyAmulets amu = PropertyAmulets.get(mp);
 
-            BaseAttributeMap map = mp.getAttributeMap();
-            Multimap mm;
+        if (amu == null) {
+            return;
+        }
 
-            IAttributeInstance ia;
-            for (Object o : map.getAllAttributes()) {
-                if (o instanceof IAttributeInstance) {
-                    ia = (IAttributeInstance) o;
+        TragicMC.net.sendTo(new MessageAmulet((EntityPlayer) event.entityLiving), mp);
+
+        BaseAttributeMap map = mp.getAttributeMap();
+
+        for (Object o : map.getAllAttributes()) {
+            if (o instanceof IAttributeInstance) {
+                IAttributeInstance ia = (IAttributeInstance) o;
+                Set<AttributeModifier> modifiers = (Set<AttributeModifier>) ia.func_111122_c();
+                for (AttributeModifier modifier : modifiers) {
                     for (UUID uuid : AmuletHelper.uuids) {
-                        ia.removeModifier(
-                            new AttributeModifier(
-                                uuid,
-                                ia.getAttribute()
-                                    .getAttributeUnlocalizedName(),
-                                0,
-                                0));
+                        if (modifier.getID().equals(uuid)) {
+                            ia.removeModifier(modifier);
+                            break;
+                        }
                     }
                 }
             }
+        }
 
-            for (byte meow = 0; meow < 3; meow++) {
-                ItemStack stack = amu.getActiveAmuletItemStack(meow);
-                if (stack != null) {
-                    mm = stack.getAttributeModifiers();
-                    map.removeAttributeModifiers(mm);
-                    map.applyAttributeModifiers(mm);
+        for (byte meow = 0; meow < 3; meow++) {
+            ItemStack stack = amu.getActiveAmuletItemStack(meow);
+            if (stack != null) {
+                Multimap<String, AttributeModifier> mm = stack.getAttributeModifiers();
+                map.removeAttributeModifiers(mm);
+                map.applyAttributeModifiers(mm);
+            }
+        }
+
+        if (mp.ticksExisted % 2 != 0) {
+            return;
+        }
+
+        byte[] levels = new byte[3];
+        ItemAmulet[] amulets = new ItemAmulet[3];
+
+        for (byte i = 0; i < 3; i++) {
+            amulets[i] = amu.getActiveAmulet(i);
+            levels[i] = AmuletHelper.getAmuletLevel(amu.getActiveAmuletItemStack(i));
+        }
+
+        int same = AmuletHelper.getSameAmulets(amulets[0], amulets[1], amulets[2]);
+
+        if (same == 0) {
+            for (byte i = 0; i < 3; i++) {
+                if (amulets[i] != null) {
+                    amulets[i].onAmuletUpdate(amu, mp, mp.worldObj, i, levels[i]);
                 }
             }
-
-            if (mp.ticksExisted % 2 != 0) return;
-
-            byte[] levels = new byte[3];
-            ItemAmulet[] amulets = new ItemAmulet[3];
-
-            byte i;
-
-            for (i = 0; i < 3; i++) {
-                amulets[i] = amu.getActiveAmulet(i);
-                levels[i] = AmuletHelper.getAmuletLevel(amu.getActiveAmuletItemStack(i));
+        } else if (same == 12) {
+            if (amulets[0] != null) {
+                amulets[0].onAmuletUpdate(amu, mp, mp.worldObj, (byte) 0, AmuletHelper.getAmuletWithHighestLevel(levels[0], levels[1]));
             }
-
-            int same = AmuletHelper.getSameAmulets(amulets[0], amulets[1], amulets[2]);
-
-            if (same == 0) {
-                for (i = 0; i < 3; i++) {
-                    if (amulets[i] != null) amulets[i].onAmuletUpdate(amu, mp, mp.worldObj, i, levels[i]);
-                }
-            } else if (same == 12) {
-                if (amulets[0] != null) amulets[0].onAmuletUpdate(
-                    amu,
-                    mp,
-                    mp.worldObj,
-                    (byte) 0,
-                    AmuletHelper.getAmuletWithHighestLevel(levels[0], levels[1]));
-                if (amulets[2] != null) amulets[2].onAmuletUpdate(amu, mp, mp.worldObj, (byte) 2, levels[2]);
-            } else if (same == 13) {
-                if (amulets[0] != null) amulets[0].onAmuletUpdate(
-                    amu,
-                    mp,
-                    mp.worldObj,
-                    (byte) 0,
-                    AmuletHelper.getAmuletWithHighestLevel(levels[0], levels[2]));
-                if (amulets[1] != null) amulets[2].onAmuletUpdate(amu, mp, mp.worldObj, (byte) 1, levels[1]);
-            } else if (same == 23) {
-                if (amulets[1] != null) amulets[1].onAmuletUpdate(
-                    amu,
-                    mp,
-                    mp.worldObj,
-                    (byte) 1,
-                    AmuletHelper.getAmuletWithHighestLevel(levels[1], levels[2]));
-                if (amulets[0] != null) amulets[0].onAmuletUpdate(amu, mp, mp.worldObj, (byte) 0, levels[0]);
-            } else if (same == 123) {
-                if (amulets[0] != null) amulets[0].onAmuletUpdate(
-                    amu,
-                    mp,
-                    mp.worldObj,
-                    (byte) 0,
-                    AmuletHelper.getAmuletWithHighestLevel(levels[0], levels[1], levels[2]));
+            if (amulets[2] != null) {
+                amulets[2].onAmuletUpdate(amu, mp, mp.worldObj, (byte) 2, levels[2]);
             }
+        } else if (same == 13) {
+            if (amulets[0] != null) {
+                amulets[0].onAmuletUpdate(amu, mp, mp.worldObj, (byte) 0, AmuletHelper.getAmuletWithHighestLevel(levels[0], levels[2]));
+            }
+            if (amulets[1] != null) {
+                amulets[1].onAmuletUpdate(amu, mp, mp.worldObj, (byte) 1, levels[1]);
+            }
+        } else if (same == 23) {
+            if (amulets[1] != null) {
+                amulets[1].onAmuletUpdate(amu, mp, mp.worldObj, (byte) 1, AmuletHelper.getAmuletWithHighestLevel(levels[1], levels[2]));
+            }
+            if (amulets[0] != null) {
+                amulets[0].onAmuletUpdate(amu, mp, mp.worldObj, (byte) 0, levels[0]);
+            }
+        } else if (same == 123 && (amulets[0] != null)) {
+                amulets[0].onAmuletUpdate(amu, mp, mp.worldObj, (byte) 0, AmuletHelper.getAmuletWithHighestLevel(levels[0], levels[1], levels[2]));
+
         }
     }
 
@@ -254,7 +251,7 @@ public class AmuletEvents {
 
             for (i = 0; i < 3 && TragicConfig.amuKitsune; i++) {
                 if (amulets[i] != null && amulets[i] == TragicItems.KitsuneAmulet) {
-                    if (event.source.getEntity() != null && event.source.getEntity() instanceof EntityLivingBase
+                    if (event.source.getEntity() instanceof EntityLivingBase
                         && !event.source.isProjectile()) {
                         if (rand.nextInt(100) <= 70) {
                             event.source.getEntity()
@@ -369,7 +366,7 @@ public class AmuletEvents {
 
     @SubscribeEvent
     public void onAmuletAttack(LivingAttackEvent event) {
-        if (event.source.getEntity() != null && event.source.getEntity() instanceof EntityPlayerMP) {
+        if (event.source.getEntity() instanceof EntityPlayerMP) {
             EntityPlayerMP mp = (EntityPlayerMP) event.source.getEntity();
             PropertyAmulets amu = PropertyAmulets.get(mp);
 

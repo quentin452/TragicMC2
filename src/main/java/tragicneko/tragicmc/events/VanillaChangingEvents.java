@@ -59,27 +59,27 @@ import tragicneko.tragicmc.properties.PropertyMisc;
 
 public class VanillaChangingEvents {
 
-    private static AttributeModifier ghastHealthBuff = new AttributeModifier(
+    private static final AttributeModifier ghastHealthBuff = new AttributeModifier(
         UUID.fromString("cb92285c-f0b5-44b5-b500-3ddd7e08ceae"),
         "ghastHealthBuff",
         modifier[14],
         0);
-    private static AttributeModifier normalHealthBuff = new AttributeModifier(
+    private static final AttributeModifier normalHealthBuff = new AttributeModifier(
         UUID.fromString("d72b0471-d23a-4a9a-a7f8-e2a54018a4ee"),
         "zombieSkeletonCreeperHealthBuff",
         modifier[15],
         0);
-    private static AttributeModifier endermanHealthBuff = new AttributeModifier(
+    private static final AttributeModifier endermanHealthBuff = new AttributeModifier(
         UUID.fromString("883e8a02-2f76-43d0-b7ee-de412b0c352d"),
         "endermanHealthBuff",
         modifier[16],
         0);
-    private static AttributeModifier spiderHealthBuff = new AttributeModifier(
+    private static final AttributeModifier spiderHealthBuff = new AttributeModifier(
         UUID.fromString("e4cec251-fce7-4cbb-9784-eba58a140c30"),
         "spiderHealthBuff",
         modifier[17],
         0);
-    private static AttributeModifier mobBlindnessDebuff = new AttributeModifier(
+    private static final AttributeModifier mobBlindnessDebuff = new AttributeModifier(
         UUID.fromString("6a73b2cb-c791-4b10-849c-6817ec3eab22"),
         "mobBlindnessFollowRangeDebuff",
         modifier[18],
@@ -87,42 +87,34 @@ public class VanillaChangingEvents {
 
     @SubscribeEvent
     public void onEntityUpdate(LivingUpdateEvent event) {
-        if (event.entityLiving.getEquipmentInSlot(0) != null && event.entityLiving instanceof EntityZombie) {
-            if (event.entityLiving.getEquipmentInSlot(0)
-                .getItem() == Items.egg) {
-                ((EntityMob) event.entityLiving).setCurrentItemOrArmor(0, null);
-            }
+        if (event.entityLiving.getEquipmentInSlot(0) != null && event.entityLiving instanceof EntityZombie && (event.entityLiving.getEquipmentInSlot(0)
+                .getItem() == Items.egg)) {
+                event.entityLiving.setCurrentItemOrArmor(0, null);
         }
-
-        if (event.entityLiving instanceof EntityEnderman && TragicConfig.allowVanillaMobBuffs) {
-            if (event.entityLiving.ticksExisted % 120 == 0
-                && event.entityLiving.getHealth() < event.entityLiving.getMaxHealth()) {
+        if (event.entityLiving instanceof EntityEnderman && TragicConfig.allowVanillaMobBuffs && (event.entityLiving.ticksExisted % 120 == 0
+                && event.entityLiving.getHealth() < event.entityLiving.getMaxHealth())) {
                 event.entityLiving.heal(3.0F);
-            }
         }
     }
 
     @SubscribeEvent
     public void onEntityDeath(LivingDeathEvent event) {
-        if (event.entityLiving instanceof EntityGhast && !event.entityLiving.worldObj.isRemote) {
-            if (event.source.damageType == "fireball" && event.source.getEntity() != null
-                && event.source.getEntity() instanceof EntityPlayer) {
+        if (event.entityLiving instanceof EntityGhast && !event.entityLiving.worldObj.isRemote && (event.source.damageType == "fireball" && event.source.getEntity() != null
+                && event.source.getEntity() instanceof EntityPlayer)) {
                 event.entityLiving
                     .entityDropItem(new ItemStack(Items.ghast_tear, 1 + rand.nextInt(2)), rand.nextFloat());
-            }
+
         }
 
         if (event.entityLiving.worldObj.difficultySetting == EnumDifficulty.HARD && TragicConfig.allowAnimalRetribution
             && rand.nextInt(16) == 0) {
-            if (event.entityLiving instanceof EntityPig && !event.entityLiving.worldObj.isRemote) {
-                if (event.source.getEntity() != null && event.source.getEntity() instanceof EntityPlayer
-                    && event.entityLiving.worldObj.difficultySetting == EnumDifficulty.HARD) {
+            if (event.entityLiving instanceof EntityPig && !event.entityLiving.worldObj.isRemote && (event.source.getEntity() instanceof EntityPlayer
+                    && event.entityLiving.worldObj.difficultySetting == EnumDifficulty.HARD)) {
                     List<Entity> list = event.entityLiving.worldObj.getEntitiesWithinAABBExcludingEntity(
                         event.entityLiving,
                         event.entityLiving.boundingBox.expand(16.0, 16.0, 16.0));
-                    if (list.size() > 0 && list.size() <= 4 && rand.nextInt(100) == 0) {
-                        for (int i = 0; i < list.size(); i++) {
-                            Entity entity = list.get(i);
+                    if (!list.isEmpty() && list.size() <= 4 && rand.nextInt(100) == 0) {
+                        for (Entity entity : list) {
                             if (entity instanceof EntityPig && rand.nextInt(4) == 0 || entity instanceof EntityPlayer) {
                                 double x = entity.posX;
                                 double y = entity.posY;
@@ -133,20 +125,18 @@ public class VanillaChangingEvents {
                             }
                         }
                     }
-                }
+
             }
 
-            if (event.entityLiving instanceof EntityChicken && !event.entityLiving.worldObj.isRemote) {
-                if (event.source.getEntity() != null && event.source.getEntity() instanceof EntityPlayer
-                    && event.entityLiving.worldObj.difficultySetting == EnumDifficulty.HARD) {
+            if (event.entityLiving instanceof EntityChicken && !event.entityLiving.worldObj.isRemote && (event.source.getEntity() instanceof EntityPlayer
+                    && event.entityLiving.worldObj.difficultySetting == EnumDifficulty.HARD)) {
                     List<Entity> list = event.entityLiving.worldObj.getEntitiesWithinAABBExcludingEntity(
                         event.entityLiving,
                         event.entityLiving.boundingBox.expand(16.0, 16.0, 16.0));
-                    if (list.size() > 0 && list.size() <= 5 && rand.nextInt(100) == 0) {
-                        for (int i = 0; i < list.size(); i++) {
-                            Entity entity = list.get(i);
+                    if (!list.isEmpty() && list.size() <= 5 && rand.nextInt(100) == 0) {
+                        for (Entity entity : list) {
                             if (entity instanceof EntityChicken && rand.nextInt(4) == 0
-                                || entity instanceof EntityPlayer) {
+                                    || entity instanceof EntityPlayer) {
                                 double x = entity.posX;
                                 double y = entity.posY;
                                 double z = entity.posZ;
@@ -156,18 +146,16 @@ public class VanillaChangingEvents {
                             }
                         }
                     }
-                }
+
             }
 
-            if (event.entityLiving instanceof EntityCow && !event.entityLiving.worldObj.isRemote) {
-                if (event.source.getEntity() != null && event.source.getEntity() instanceof EntityPlayer
-                    && event.entityLiving.worldObj.difficultySetting == EnumDifficulty.HARD) {
+            if (event.entityLiving instanceof EntityCow && !event.entityLiving.worldObj.isRemote && (event.source.getEntity() instanceof EntityPlayer
+                    && event.entityLiving.worldObj.difficultySetting == EnumDifficulty.HARD)) {
                     List<Entity> list = event.entityLiving.worldObj.getEntitiesWithinAABBExcludingEntity(
                         event.entityLiving,
                         event.entityLiving.boundingBox.expand(16.0, 16.0, 16.0));
-                    if (list.size() > 0 && list.size() <= 5 && rand.nextInt(100) == 0) {
-                        for (int i = 0; i < list.size(); i++) {
-                            Entity entity = list.get(i);
+                    if (!list.isEmpty() && list.size() <= 5 && rand.nextInt(100) == 0) {
+                        for (Entity entity : list) {
                             if (entity instanceof EntityCow && rand.nextInt(4) == 0 || entity instanceof EntityPlayer) {
                                 double x = entity.posX;
                                 double y = entity.posY;
@@ -178,7 +166,7 @@ public class VanillaChangingEvents {
                             }
                         }
                     }
-                }
+
             }
         }
     }
@@ -241,31 +229,31 @@ public class VanillaChangingEvents {
                                 case 0:
                                     switch (rand.nextInt(12)) {
                                         case 0:
-                                            ((EntityMob) event.entity)
+                                            event.entity
                                                 .setCurrentItemOrArmor(i, new ItemStack(TragicItems.Scythe));
                                             break;
                                         case 1:
-                                            ((EntityMob) event.entity)
+                                            event.entity
                                                 .setCurrentItemOrArmor(i, new ItemStack(TragicItems.MercuryDagger));
                                             break;
                                         case 2:
-                                            ((EntityMob) event.entity)
+                                            event.entity
                                                 .setCurrentItemOrArmor(i, new ItemStack(TragicItems.Jack));
                                             break;
                                         case 3:
-                                            ((EntityMob) event.entity)
+                                            event.entity
                                                 .setCurrentItemOrArmor(i, new ItemStack(Items.iron_sword));
                                             break;
                                         case 4:
-                                            ((EntityMob) event.entity)
+                                            event.entity
                                                 .setCurrentItemOrArmor(i, new ItemStack(Items.golden_sword));
                                             break;
                                         case 5:
-                                            ((EntityMob) event.entity)
+                                            event.entity
                                                 .setCurrentItemOrArmor(i, new ItemStack(Items.wooden_sword));
                                             break;
                                         case 6:
-                                            ((EntityMob) event.entity)
+                                            event.entity
                                                 .setCurrentItemOrArmor(i, new ItemStack(Items.diamond_sword));
                                             break;
                                     }
@@ -273,39 +261,39 @@ public class VanillaChangingEvents {
                                 case 1:
                                     switch (rand.nextInt(12)) {
                                         case 0:
-                                            ((EntityMob) event.entity)
+                                            event.entity
                                                 .setCurrentItemOrArmor(i, new ItemStack(TragicItems.SkullHelmet));
                                             break;
                                         case 1:
-                                            ((EntityMob) event.entity)
+                                            event.entity
                                                 .setCurrentItemOrArmor(i, new ItemStack(TragicItems.MercuryHelm));
                                             break;
                                         case 2:
-                                            ((EntityMob) event.entity)
+                                            event.entity
                                                 .setCurrentItemOrArmor(i, new ItemStack(TragicItems.SkullHelmet));
                                             break;
                                         case 3:
-                                            ((EntityMob) event.entity)
+                                            event.entity
                                                 .setCurrentItemOrArmor(i, new ItemStack(Items.iron_helmet));
                                             break;
                                         case 4:
-                                            ((EntityMob) event.entity)
+                                            event.entity
                                                 .setCurrentItemOrArmor(i, new ItemStack(Items.golden_helmet));
                                             break;
                                         case 5:
-                                            ((EntityMob) event.entity)
+                                            event.entity
                                                 .setCurrentItemOrArmor(i, new ItemStack(Items.leather_helmet));
                                             break;
                                         case 6:
-                                            ((EntityMob) event.entity)
+                                            event.entity
                                                 .setCurrentItemOrArmor(i, new ItemStack(Items.diamond_helmet));
                                             break;
                                         case 7:
-                                            ((EntityMob) event.entity)
+                                            event.entity
                                                 .setCurrentItemOrArmor(i, new ItemStack(TragicItems.DarkHelm));
                                             break;
                                         case 8:
-                                            ((EntityMob) event.entity)
+                                            event.entity
                                                 .setCurrentItemOrArmor(i, new ItemStack(TragicItems.LightHelm));
                                             break;
                                     }
@@ -313,39 +301,39 @@ public class VanillaChangingEvents {
                                 case 2:
                                     switch (rand.nextInt(12)) {
                                         case 0:
-                                            ((EntityMob) event.entity)
+                                            event.entity
                                                 .setCurrentItemOrArmor(i, new ItemStack(TragicItems.SkullPlate));
                                             break;
                                         case 1:
-                                            ((EntityMob) event.entity)
+                                            event.entity
                                                 .setCurrentItemOrArmor(i, new ItemStack(TragicItems.MercuryPlate));
                                             break;
                                         case 2:
-                                            ((EntityMob) event.entity)
+                                            event.entity
                                                 .setCurrentItemOrArmor(i, new ItemStack(TragicItems.SkullPlate));
                                             break;
                                         case 3:
-                                            ((EntityMob) event.entity)
+                                            event.entity
                                                 .setCurrentItemOrArmor(i, new ItemStack(Items.iron_chestplate));
                                             break;
                                         case 4:
-                                            ((EntityMob) event.entity)
+                                            event.entity
                                                 .setCurrentItemOrArmor(i, new ItemStack(Items.golden_chestplate));
                                             break;
                                         case 5:
-                                            ((EntityMob) event.entity)
+                                            event.entity
                                                 .setCurrentItemOrArmor(i, new ItemStack(Items.leather_chestplate));
                                             break;
                                         case 6:
-                                            ((EntityMob) event.entity)
+                                            event.entity
                                                 .setCurrentItemOrArmor(i, new ItemStack(Items.diamond_chestplate));
                                             break;
                                         case 7:
-                                            ((EntityMob) event.entity)
+                                            event.entity
                                                 .setCurrentItemOrArmor(i, new ItemStack(TragicItems.DarkPlate));
                                             break;
                                         case 8:
-                                            ((EntityMob) event.entity)
+                                            event.entity
                                                 .setCurrentItemOrArmor(i, new ItemStack(TragicItems.LightPlate));
                                             break;
                                     }
@@ -353,39 +341,39 @@ public class VanillaChangingEvents {
                                 case 3:
                                     switch (rand.nextInt(12)) {
                                         case 0:
-                                            ((EntityMob) event.entity)
+                                            event.entity
                                                 .setCurrentItemOrArmor(i, new ItemStack(TragicItems.SkullLegs));
                                             break;
                                         case 1:
-                                            ((EntityMob) event.entity)
+                                            event.entity
                                                 .setCurrentItemOrArmor(i, new ItemStack(TragicItems.MercuryLegs));
                                             break;
                                         case 2:
-                                            ((EntityMob) event.entity)
+                                            event.entity
                                                 .setCurrentItemOrArmor(i, new ItemStack(TragicItems.SkullLegs));
                                             break;
                                         case 3:
-                                            ((EntityMob) event.entity)
+                                            (event.entity)
                                                 .setCurrentItemOrArmor(i, new ItemStack(Items.iron_leggings));
                                             break;
                                         case 4:
-                                            ((EntityMob) event.entity)
+                                            (event.entity)
                                                 .setCurrentItemOrArmor(i, new ItemStack(Items.golden_leggings));
                                             break;
                                         case 5:
-                                            ((EntityMob) event.entity)
+                                            (event.entity)
                                                 .setCurrentItemOrArmor(i, new ItemStack(Items.leather_leggings));
                                             break;
                                         case 6:
-                                            ((EntityMob) event.entity)
+                                            (event.entity)
                                                 .setCurrentItemOrArmor(i, new ItemStack(Items.diamond_leggings));
                                             break;
                                         case 7:
-                                            ((EntityMob) event.entity)
+                                            (event.entity)
                                                 .setCurrentItemOrArmor(i, new ItemStack(TragicItems.DarkLegs));
                                             break;
                                         case 8:
-                                            ((EntityMob) event.entity)
+                                            (event.entity)
                                                 .setCurrentItemOrArmor(i, new ItemStack(TragicItems.LightLegs));
                                             break;
                                     }
@@ -393,39 +381,39 @@ public class VanillaChangingEvents {
                                 case 4:
                                     switch (rand.nextInt(12)) {
                                         case 0:
-                                            ((EntityMob) event.entity)
+                                            (event.entity)
                                                 .setCurrentItemOrArmor(i, new ItemStack(TragicItems.SkullBoots));
                                             break;
                                         case 1:
-                                            ((EntityMob) event.entity)
+                                            (event.entity)
                                                 .setCurrentItemOrArmor(i, new ItemStack(TragicItems.MercuryBoots));
                                             break;
                                         case 2:
-                                            ((EntityMob) event.entity)
+                                            (event.entity)
                                                 .setCurrentItemOrArmor(i, new ItemStack(TragicItems.SkullBoots));
                                             break;
                                         case 3:
-                                            ((EntityMob) event.entity)
+                                            (event.entity)
                                                 .setCurrentItemOrArmor(i, new ItemStack(Items.iron_boots));
                                             break;
                                         case 4:
-                                            ((EntityMob) event.entity)
+                                            (event.entity)
                                                 .setCurrentItemOrArmor(i, new ItemStack(Items.golden_boots));
                                             break;
                                         case 5:
-                                            ((EntityMob) event.entity)
+                                            (event.entity)
                                                 .setCurrentItemOrArmor(i, new ItemStack(Items.leather_boots));
                                             break;
                                         case 6:
-                                            ((EntityMob) event.entity)
+                                            (event.entity)
                                                 .setCurrentItemOrArmor(i, new ItemStack(Items.diamond_boots));
                                             break;
                                         case 7:
-                                            ((EntityMob) event.entity)
+                                            (event.entity)
                                                 .setCurrentItemOrArmor(i, new ItemStack(TragicItems.DarkBoots));
                                             break;
                                         case 8:
-                                            ((EntityMob) event.entity)
+                                            (event.entity)
                                                 .setCurrentItemOrArmor(i, new ItemStack(TragicItems.LightBoots));
                                             break;
                                     }
@@ -450,8 +438,7 @@ public class VanillaChangingEvents {
     public void onEntityAttack(LivingHurtEvent event) {
         if (event.entityLiving.worldObj.isRemote) return;
 
-        if (event.entityLiving instanceof EntityEnderman || event.entityLiving instanceof EntityWitch) {
-            if (event.source == DamageSource.magic && event.isCancelable()) event.setCanceled(true);
+        if (event.entityLiving instanceof EntityEnderman || event.entityLiving instanceof EntityWitch && (event.source == DamageSource.magic && event.isCancelable())) {event.setCanceled(true);
         }
 
         if (event.source.getEntity() instanceof EntityIronGolem && TragicConfig.allowIronGolemHitCooldown) // added
@@ -467,21 +454,20 @@ public class VanillaChangingEvents {
             }
         }
 
-        if (event.source.getEntity() != null && event.source.getEntity() instanceof EntityLivingBase
+        if (event.source.getEntity() instanceof EntityLivingBase
             && !event.source.isMagicDamage()
             && event.source.isExplosion()
             && !event.source.isProjectile()
             && rand.nextInt(4) == 0
-            && TragicConfig.allowExtraExplosiveEffects) {
-            if (event.entityLiving instanceof EntityPlayer
-                && !((EntityPlayer) event.entityLiving).capabilities.isCreativeMode) {
+            && TragicConfig.allowExtraExplosiveEffects && (event.entityLiving instanceof EntityPlayer
+                && !((EntityPlayer) event.entityLiving).capabilities.isCreativeMode)) {
                 if (rand.nextBoolean()) {
                     event.entityLiving.addPotionEffect(new PotionEffect(Potion.confusion.id, rand.nextInt(80) + 60));
                 } else {
                     if (TragicConfig.allowDisorientation) event.entityLiving
                         .addPotionEffect(new PotionEffect(TragicPotion.Disorientation.id, rand.nextInt(80) + 60));
                 }
-            }
+
         }
 
         if (event.entityLiving.worldObj.difficultySetting == EnumDifficulty.HARD && event.source.getEntity() != null
@@ -506,8 +492,7 @@ public class VanillaChangingEvents {
                     .addPotionEffect(new PotionEffect(Potion.hunger.id, rand.nextInt(160) + 40, rand.nextInt(4)));
             }
 
-            if (event.source.getEntity() instanceof EntitySlime) {
-                if (event.entityLiving instanceof EntityPlayer) {
+            if (event.source.getEntity() instanceof EntitySlime && (event.entityLiving instanceof EntityPlayer)) {
                     PropertyDoom property = PropertyDoom.get((EntityPlayer) event.entityLiving);
 
                     if (property != null && TragicConfig.allowDoom) {
@@ -520,7 +505,7 @@ public class VanillaChangingEvents {
 
                     ((EntitySlime) event.source.getEntity()).heal(event.ammount / 2);
 
-                }
+
             }
 
             if (event.source.getEntity() instanceof EntityMagmaCube) {
@@ -571,11 +556,10 @@ public class VanillaChangingEvents {
                     }
                 }
 
-                if (event.source.getEntity() instanceof EntitySilverfish) {
-                    if (rand.nextInt(4) == 0 && TragicConfig.allowStun) {
+                if (event.source.getEntity() instanceof EntitySilverfish && (rand.nextInt(4) == 0 && TragicConfig.allowStun)) {
                         event.entityLiving.addPotionEffect(
                             new PotionEffect(TragicPotion.Stun.id, rand.nextInt(40) + 20, rand.nextInt(4)));
-                    }
+
                 }
 
                 if (event.source.getEntity() instanceof EntityEnderman) {
@@ -607,14 +591,12 @@ public class VanillaChangingEvents {
                 }
             }
 
-            if (event.source.getEntity() instanceof EntityBlaze) {
-                if (rand.nextInt(8) == 0 && TragicConfig.allowDisorientation) event.entityLiving.addPotionEffect(
+            if (event.source.getEntity() instanceof EntityBlaze && (rand.nextInt(8) == 0 && TragicConfig.allowDisorientation)) {event.entityLiving.addPotionEffect(
                     new PotionEffect(TragicPotion.Disorientation.id, rand.nextInt(80) + 40, rand.nextInt(4)));
             }
         }
 
-        if (event.entityLiving instanceof EntityEnderman) {
-            if (event.entityLiving.isBurning()) event.entityLiving.extinguish();
+        if (event.entityLiving instanceof EntityEnderman && (event.entityLiving.isBurning())) {event.entityLiving.extinguish();
         }
 
         if (event.entityLiving instanceof EntityCreature && TragicConfig.allowMobBlindnessDebuff) {
@@ -646,7 +628,7 @@ public class VanillaChangingEvents {
             TragicMob mob = new EntityMinotaur(event.entity.worldObj);
 
             mob.copyLocationAndAnglesFrom(event.entity);
-            mob.onSpawnWithEgg((IEntityLivingData) null);
+            mob.onSpawnWithEgg(null);
             event.entity.worldObj.removeEntity(event.entity);
             event.entity.worldObj.spawnEntityInWorld(mob);
             if (TragicConfig.allowInvulnerability)

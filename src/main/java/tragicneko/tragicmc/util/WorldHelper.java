@@ -9,9 +9,7 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.World;
 
-import java.util.ArrayList;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 import static tragicneko.tragicmc.TragicMC.rand;
 
@@ -149,21 +147,22 @@ public class WorldHelper {
      * @return
      */
     public static ArrayList<int[]> getBlocksInSphericalRange(World world, double radius, double x, double y, double z) {
-        ArrayList<int[]> list = new ArrayList();
+        ArrayList<int[]> list = new ArrayList<>();
         if (radius <= 0) throw new IllegalArgumentException("Radius cannot be negative!");
 
         double distance = radius + 1.5D;
 
-        int[] coords;
+        HashSet<String> visitedCoords = new HashSet<>();
 
         for (double y1 = -distance; y1 < distance; y1 += 0.5D) {
             for (double x1 = -distance; x1 < distance; x1 += 0.5D) {
                 for (double z1 = -distance; z1 < distance; z1 += 0.5D) {
                     if (MathHelper.sqrt_double(x1 * x1 + z1 * z1 + y1 * y1) < radius) {
-                        coords = new int[] { (int) ((int) x + x1), (int) ((int) y + y1), (int) ((int) z + z1) };
-
-                        if (!list.contains(coords)) {
+                        int[] coords = new int[] { (int) (x + x1), (int) (y + y1), (int) (z + z1) };
+                        String coordString = Arrays.toString(coords);
+                        if (!visitedCoords.contains(coordString)) {
                             list.add(coords);
+                            visitedCoords.add(coordString);
                         }
                     }
                 }
