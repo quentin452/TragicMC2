@@ -1,12 +1,9 @@
 package tragicneko.tragicmc.events;
 
-import static tragicneko.tragicmc.TragicMC.rand;
-
-import java.lang.reflect.Method;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
-
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Sets;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.relauncher.ReflectionHelper;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -15,7 +12,6 @@ import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.BaseAttributeMap;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.boss.IBossDisplayData;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -36,13 +32,6 @@ import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.ArrowLooseEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.event.world.BlockEvent.BreakEvent;
-
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Sets;
-
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.relauncher.ReflectionHelper;
 import tragicneko.tragicmc.TragicConfig;
 import tragicneko.tragicmc.TragicItems;
 import tragicneko.tragicmc.TragicMC;
@@ -56,14 +45,21 @@ import tragicneko.tragicmc.properties.PropertyAmulets;
 import tragicneko.tragicmc.util.AmuletHelper;
 import tragicneko.tragicmc.util.DamageHelper;
 
+import java.lang.reflect.Method;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
+
+import static tragicneko.tragicmc.TragicMC.rand;
+
 public class AmuletEvents {
 
-    public static Set<Potion> badPotions = Sets.newHashSet(
-        new Potion[] { Potion.blindness, Potion.confusion, Potion.digSlowdown, Potion.harm, Potion.hunger,
+    public static final Set<Potion> badPotions = Sets.newHashSet(
+            Potion.blindness, Potion.confusion, Potion.digSlowdown, Potion.harm, Potion.hunger,
             Potion.moveSlowdown, Potion.poison, Potion.weakness, Potion.wither, TragicPotion.Corruption,
             TragicPotion.Cripple, TragicPotion.Disorientation, TragicPotion.Fear, TragicPotion.Inhibit,
             TragicPotion.Malnourish, TragicPotion.Stun, TragicPotion.Submission, TragicPotion.Hacked,
-            TragicPotion.LeadFoot });
+            TragicPotion.LeadFoot);
 
     @SubscribeEvent
     public void onEntityConstructing(EntityConstructing event) {
@@ -84,14 +80,12 @@ public class AmuletEvents {
 
     @SubscribeEvent
     public void onLivingDeathEvent(PlayerEvent.Clone event) {
-        if (!event.entity.worldObj.isRemote && TragicConfig.allowAmulets) {
-            if (PropertyAmulets.get(event.original) != null) {
+        if (!event.entity.worldObj.isRemote && TragicConfig.allowAmulets && (PropertyAmulets.get(event.original) != null)) {
                 NBTTagCompound tag = new NBTTagCompound();
                 PropertyAmulets.get(event.original)
                     .saveNBTData(tag);
                 PropertyAmulets.get(event.entityPlayer)
                     .loadNBTData(tag);
-            }
         }
     }
 
@@ -124,8 +118,12 @@ public class AmuletEvents {
             && !event.source.isUnblockable()) {
             IAttributeInstance ins = event.entityLiving.getEntityAttribute(AmuletModifier.resistance);
             double d0 = ins == null ? 0.0 : ins.getAttributeValue();
-            event.ammount -= d0;
+            event.ammount -= (float) d0;
         }
+    }
+
+    private void sendAmuletUpdateMessage(EntityPlayerMP player) {
+        TragicMC.net.sendTo(new MessageAmulet(player), player);
     }
 
     @SubscribeEvent
@@ -141,7 +139,7 @@ public class AmuletEvents {
             return;
         }
 
-        TragicMC.net.sendTo(new MessageAmulet((EntityPlayer) event.entityLiving), mp);
+        sendAmuletUpdateMessage(mp);
 
         BaseAttributeMap map = mp.getAttributeMap();
 
@@ -321,9 +319,9 @@ public class AmuletEvents {
             for (i = 0; i < 3 && TragicConfig.amuPolaris && !event.source.isDamageAbsolute(); i++) {
                 if (amulets[i] != null && amulets[i] == TragicItems.PolarisAmulet) {
                     if (event.entityLiving.worldObj.isDaytime()) {
-                        event.ammount *= 1.45D;
+                        event.ammount *= 1.45F;
                     } else {
-                        event.ammount *= (1 / 1.45D);
+                        event.ammount *= (float) (1 / 1.45D);
                     }
                     break;
                 }
@@ -333,7 +331,7 @@ public class AmuletEvents {
                 && !event.source.isDamageAbsolute()
                 && event.entityLiving.worldObj.provider.dimensionId == TragicConfig.synapseID; i++) {
                 if (amulets[i] != null && amulets[i] == TragicItems.OverlordAmulet) {
-                    event.ammount *= 0.65D;
+                    event.ammount *= 0.65F;
                     break;
                 }
             }
@@ -527,7 +525,7 @@ public class AmuletEvents {
             }
 
             for (i = 0; i < 3 && TragicConfig.amuLuck && event.entityLiving instanceof EntityLiving; i++) {
-                if (amulets[i] != null && ((ItemAmulet) amulets[i].getItem()) == TragicItems.LuckAmulet
+                if (amulets[i] != null && amulets[i].getItem() == TragicItems.LuckAmulet
                     && DO_REFLECTION) {
                     try {
                         Method m = ReflectionHelper.findMethod(
@@ -584,7 +582,7 @@ public class AmuletEvents {
                     new String[] { "getExperiencePoints", "func_70693_a" },
                     EntityPlayer.class);
                 m.setAccessible(true);
-                int j = (Integer) m.invoke((EntityLiving) event.entityLiving, mp);
+                int j = (Integer) m.invoke(event.entityLiving, mp);
                 j *= d0;
 
                 while (j > 0) {
