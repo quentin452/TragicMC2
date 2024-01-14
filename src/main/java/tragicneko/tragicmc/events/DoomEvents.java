@@ -45,42 +45,41 @@ public class DoomEvents {
 
             if (doom != null) {
                 doom.onUpdate();
-                if (event.entityLiving instanceof EntityPlayerMP)
-                    TragicMC.net.sendTo(new MessageDoom((EntityPlayer) event.entity), (EntityPlayerMP) event.entity);
+                sendDoomUpdateMessage((EntityPlayer) event.entityLiving);
             }
+        }
+    }
+
+    private void sendDoomUpdateMessage(EntityPlayer player) {
+        if (player instanceof EntityPlayerMP) {
+            TragicMC.net.sendTo(new MessageDoom(player), (EntityPlayerMP) player);
         }
     }
 
     @SubscribeEvent
     public void onLivingDeathEvent(PlayerEvent.Clone event) {
-        if (!event.entity.worldObj.isRemote && TragicConfig.allowDoom) {
-            if (PropertyDoom.get(event.original) != null) {
+        if (!event.entity.worldObj.isRemote && TragicConfig.allowDoom && (PropertyDoom.get(event.original) != null)) {
                 NBTTagCompound tag = new NBTTagCompound();
                 PropertyDoom.get(event.original)
                     .saveNBTData(tag);
                 PropertyDoom.get(event.entityPlayer)
                     .loadNBTData(tag);
-            }
         }
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onAttack(LivingHurtEvent event) {
-        if (event.entityLiving instanceof EntityPlayer && TragicConfig.allowDoomPainRecharge) {
-            if (!event.entityLiving.worldObj.isRemote) {
+        if (event.entityLiving instanceof EntityPlayer && TragicConfig.allowDoomPainRecharge && (!event.entityLiving.worldObj.isRemote)) {
                 PropertyDoom properties = PropertyDoom.get((EntityPlayer) event.entityLiving);
                 properties.applyDoomPainRecharge(event.ammount);
-            }
         }
 
-        if (event.entityLiving instanceof EntityMob && TragicConfig.allowDoomPainRecharge) {
-            if (event.source.getEntity() instanceof EntityLivingBase
-                && event.source.getEntity() instanceof EntityPlayer) {
+        if (event.entityLiving instanceof EntityMob && TragicConfig.allowDoomPainRecharge && (event.source.getEntity() instanceof EntityLivingBase
+                && event.source.getEntity() instanceof EntityPlayer)) {
                 EntityPlayer player = (EntityPlayer) event.source.getEntity();
 
                 PropertyDoom properties = PropertyDoom.get(player);
                 properties.applyDoomPainRecharge(event.ammount);
-            }
         }
     }
 
@@ -94,14 +93,12 @@ public class DoomEvents {
 
     @SubscribeEvent
     public void onDeath(LivingDeathEvent event) {
-        if (event.entityLiving instanceof EntityMob && TragicConfig.allowDoomKillRecharge) {
-            if (event.source.getEntity() instanceof EntityLivingBase
-                && event.source.getEntity() instanceof EntityPlayer) {
+        if (event.entityLiving instanceof EntityMob && TragicConfig.allowDoomKillRecharge && (event.source.getEntity() instanceof EntityLivingBase
+                && event.source.getEntity() instanceof EntityPlayer)) {
                 EntityPlayer player = (EntityPlayer) event.source.getEntity();
 
                 PropertyDoom properties = PropertyDoom.get(player);
                 properties.increaseDoom(TragicConfig.doomRechargeAmount);
-            }
         }
     }
 }
