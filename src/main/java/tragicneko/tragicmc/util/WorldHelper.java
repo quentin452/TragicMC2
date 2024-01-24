@@ -146,24 +146,30 @@ public class WorldHelper {
      * @param z
      * @return
      */
+
     public static ArrayList<int[]> getBlocksInSphericalRange(World world, double radius, double x, double y, double z) {
         ArrayList<int[]> list = new ArrayList<>();
         if (radius <= 0) throw new IllegalArgumentException("Radius cannot be negative!");
 
-        double distance = radius + 1.5D;
+        double radiusSquared = radius * radius;
 
-        HashSet<String> visitedCoords = new HashSet<>();
+        int x0 = (int) Math.floor(x);
+        int y0 = (int) Math.floor(y);
+        int z0 = (int) Math.floor(z);
 
-        for (double y1 = -distance; y1 < distance; y1 += 0.5D) {
-            for (double x1 = -distance; x1 < distance; x1 += 0.5D) {
-                for (double z1 = -distance; z1 < distance; z1 += 0.5D) {
-                    if (MathHelper.sqrt_double(x1 * x1 + z1 * z1 + y1 * y1) < radius) {
-                        int[] coords = new int[] { (int) (x + x1), (int) (y + y1), (int) (z + z1) };
-                        String coordString = Arrays.toString(coords);
-                        if (!visitedCoords.contains(coordString)) {
-                            list.add(coords);
-                            visitedCoords.add(coordString);
-                        }
+        int x1 = (int) Math.ceil(x + radius);
+        int y1 = (int) Math.ceil(y + radius);
+        int z1 = (int) Math.ceil(z + radius);
+
+        for (int i = x0; i <= x1; i++) {
+            for (int j = y0; j <= y1; j++) {
+                for (int k = z0; k <= z1; k++) {
+                    double dx = i - x;
+                    double dy = j - y;
+                    double dz = k - z;
+
+                    if (dx * dx + dy * dy + dz * dz <= radiusSquared) {
+                        list.add(new int[] { i, j, k });
                     }
                 }
             }
