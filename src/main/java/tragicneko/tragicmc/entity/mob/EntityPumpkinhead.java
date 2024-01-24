@@ -58,11 +58,11 @@ public class EntityPumpkinhead extends TragicMob {
     @Override
     protected void entityInit() {
         super.entityInit();
-        this.dataWatcher.addObject(16, Float.valueOf(2.0F));
-        this.dataWatcher.addObject(17, Integer.valueOf(0));
-        this.dataWatcher.addObject(18, Integer.valueOf(0));
-        this.dataWatcher.addObject(19, Integer.valueOf(0));
-        this.dataWatcher.addObject(20, Integer.valueOf(0));
+        this.dataWatcher.addObject(16, 2.0F);
+        this.dataWatcher.addObject(17, 0);
+        this.dataWatcher.addObject(18, 0);
+        this.dataWatcher.addObject(19, 0);
+        this.dataWatcher.addObject(20, 0);
     }
 
     public float getModValue() {
@@ -239,10 +239,10 @@ public class EntityPumpkinhead extends TragicMob {
         ArrayList<int[]> list = WorldHelper.getBlocksInSphericalRange(worldObj, 6.0D, this.posX, this.posY, this.posZ);
         int[] coords;
 
-        for (int i = 0; i < list.size(); i++) {
-            coords = list.get(i);
+        for (int[] ints : list) {
+            coords = ints;
             if (this.worldObj.getBlock(coords[0], coords[1], coords[2]) == Blocks.pumpkin
-                || this.worldObj.getBlock(coords[0], coords[1], coords[2]) == Blocks.lit_pumpkin) return true;
+                    || this.worldObj.getBlock(coords[0], coords[1], coords[2]) == Blocks.lit_pumpkin) return true;
         }
         return false;
     }
@@ -251,24 +251,28 @@ public class EntityPumpkinhead extends TragicMob {
         ArrayList<int[]> list = WorldHelper.getBlocksInSphericalRange(worldObj, 6.0D, this.posX, this.posY, this.posZ);
         int[] coords;
 
-        for (int i = 0; i < list.size(); i++) {
-            coords = list.get(i);
+        for (int[] ints : list) {
+            coords = ints;
             if (this.worldObj.getBlock(coords[0], coords[1], coords[2]) == Blocks.pumpkin
-                || this.worldObj.getBlock(coords[0], coords[1], coords[2]) == Blocks.lit_pumpkin) return coords;
+                    || this.worldObj.getBlock(coords[0], coords[1], coords[2]) == Blocks.lit_pumpkin) return coords;
         }
 
-        return null;
+        return new int[0];
     }
 
     public void createHomePumpkin() {
         if (!TragicConfig.pumpkinheadPumpkinSpawn) return;
-        ArrayList<int[]> list = WorldHelper.getBlocksInSphericalRange(worldObj, 6.0D, this.posX, this.posY, this.posZ);
+
+        double radius = 6.0D;
+        ArrayList<int[]> list = WorldHelper.getBlocksInSphericalRange(worldObj, radius, this.posX, this.posY, this.posZ);
+
         int[] coords;
         Block block;
 
-        for (int i = 0; i < list.size(); i++) {
-            coords = list.get(i);
+        for (int[] ints : list) {
+            coords = ints;
             block = this.worldObj.getBlock(coords[0], coords[1], coords[2]);
+
             if (block.canBeReplacedByLeaves(worldObj, coords[0], coords[1], coords[2])
                 && World.doesBlockHaveSolidTopSurface(worldObj, coords[0], coords[1] - 1, coords[2])) {
                 this.worldObj.setBlock(coords[0], coords[1], coords[2], Blocks.lit_pumpkin);
@@ -292,13 +296,13 @@ public class EntityPumpkinhead extends TragicMob {
                 .getEntitiesWithinAABBExcludingEntity(this, this.boundingBox.expand(12.0, 12.0, 12.0));
             EntityPumpkinhead mob;
 
-            for (int i = 0; i < list.size(); i++) {
-                if (list.get(i) instanceof EntityPumpkinhead) {
-                    mob = (EntityPumpkinhead) list.get(i);
+            for (Entity entity : list) {
+                if (entity instanceof EntityPumpkinhead) {
+                    mob = (EntityPumpkinhead) entity;
                     if (mob.getAttackTarget() == null && this.getAttackTarget() != null)
                         mob.setTarget(this.getAttackTarget());
                     if (mob.getHomeCoordinates() == this.getHomeCoordinates() && mob.hasHomePumpkin()
-                        && this.hasHomePumpkin()) mob.attackEntityFrom(DamageSource.magic, 1.0F);
+                            && this.hasHomePumpkin()) mob.attackEntityFrom(DamageSource.magic, 1.0F);
                 }
             }
         }
